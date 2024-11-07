@@ -13,6 +13,7 @@ import static jakarta.persistence.GenerationType.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member_snowman")
 public class MemberSnowman {
 
     @Id

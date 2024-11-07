@@ -49,6 +49,9 @@ dependencies {
 
 	//spring security 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	//mysql 의존성 추가
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
