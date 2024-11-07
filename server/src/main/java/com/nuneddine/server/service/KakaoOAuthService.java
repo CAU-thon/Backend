@@ -1,0 +1,73 @@
+package com.nuneddine.server.service;
+
+import com.nuneddine.server.config.jwt.JwtUtil;
+import com.nuneddine.server.domain.Member;
+import com.nuneddine.server.dto.response.KakaoOAuthTokenResponseDto;
+import com.nuneddine.server.repository.MemberJpaRepository;
+import com.nuneddine.server.util.KakaoUser;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+
+@RequiredArgsConstructor
+public class KakaoOAuthService {
+
+    private final JwtUtil jwtUtil;
+    private final MemberJpaRepository memberJpaRepository;
+
+    private final String clientId = "531d63d0737f13134bb2417073a24a0e";
+    private final String clientSecret = "tWaPuWHNPVfhUOnLd342qk7X0V9zzyTs";
+
+    public String exchangeCodeForAccessToken(String code) {
+        WebClient webClient = WebClient.builder().build();
+
+        KakaoOAuthTokenResponseDto tokenResponse = webClient.post()
+                .uri("https://kauth.kakao.com/oauth/token")
+                .body(BodyInserters.fromFormData("client_id", clientId)
+                        .with("client_secret", clientSecret)
+                        .with("code", code)
+                        .with("grant_type", "authorization_code")
+                        .with("redirect_uri", "http://localhost:3000/oauth/callback"))
+                .retrieve()
+                .bodyToMono(KakaoOAuthTokenResponseDto.class)
+                .block();
+
+        String accessToken = null;
+        try {
+            accessToken = tokenResponse.getAccessToken();
+
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        return accessToken;
+    }
+
+    public KakaoUser fetchKakaoUserInfo(String accessToken) {
+        KakaoUser kakaoUser = WebClient.create()
+                .get()
+                .uri("https://kapi.kakao.com/v2/user/me")
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(KakaoUser.class)
+                .block();
+
+        Member member = memberJpaRepository.findByKakaoId(kakaoUser.getId())
+                .orElseGet(() -> Member.builder()
+                        .kakaoId(kakaoUser.getId())
+                        .username(kakaoUser.getKakaoAccount().getProfile().getNickname())
+                        .chance(3)
+                        .build(0)
+                        .point(0)
+                        .build());
+
+        if (member.getId() == null) {
+            memberJpaRepository.save(member);
+        }
+
+        return kakaoUser;
+    }
+
+    public String createJwtForUser(KakaoUser kakaoUser) {
+        return jwtUtil.generateToken(kakaoUser.getId());
+    }
+}
