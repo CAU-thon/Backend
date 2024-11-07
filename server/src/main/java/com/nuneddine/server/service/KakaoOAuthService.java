@@ -67,9 +67,16 @@ public class KakaoOAuthService {
                         .chance(3)
                         .build(0)
                         .point(0)
+                        .image(kakaoUser.getKakaoAccount().getProfile().getImage())
                         .build());
 
         if (member.getId() == null) {
+            memberJpaRepository.save(member);
+        }
+
+        String image = kakaoUser.getKakaoAccount().getProfile().getImage();
+        if (member.getImage() != image) {
+            member.updateImage(image);
             memberJpaRepository.save(member);
         }
 
