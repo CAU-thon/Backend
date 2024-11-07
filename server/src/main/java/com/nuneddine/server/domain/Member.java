@@ -3,6 +3,7 @@ package com.nuneddine.server.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,14 @@ public class Member {
     private int build;
     private int chance;
     private int point;
+
+    @Builder
+    public Member(Long kakaoId, String username, String nickname, int build, int chance, int point) {
+        this.kakaoId = kakaoId;
+        this.username = username;
+        this.nickname = nickname;
+        this.build = build;
+        this.chance = chance;
+        this.point = point;
+    }
 }
