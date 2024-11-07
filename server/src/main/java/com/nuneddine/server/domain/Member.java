@@ -22,18 +22,18 @@ public class Member {
     @Column(unique = true)
     private Long kakaoId;
     private String username;
-    private String nickname;
     private int build;
     private int chance;
     private int point;
+    private String image;
 
     @Builder
-    public Member(Long kakaoId, String username, String nickname, int build, int chance, int point) {
+    public Member(Long kakaoId, String username, int build, int chance, int point, String image) {
         this.kakaoId = kakaoId;
         this.username = username;
-        this.nickname = nickname;
         this.build = build;
         this.chance = chance;
         this.point = point;
+        this.image = image;
     }
 }
