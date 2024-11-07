@@ -15,6 +15,27 @@ spring:
     init:
       mode: always # 애플리케이션 시작 시 스크립트 초기화 (기본값: embedded)
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${kakao.client.id}
+            client-secret: ${kakao.client.server}
+            authorization-grant-type: authorization_code
+            client_name: "Kakao"
+            redirect-uri: ${kakao.redirect-uri}
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+jwt:
+  secret: ${jwt.secret}
+  expiration: ${jwt.expiration}
+
 logging:
   level:
     root: INFO

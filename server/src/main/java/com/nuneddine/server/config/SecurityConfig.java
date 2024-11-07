@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .cors((SecurityConfig::corsAllow))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/v1/cors").permitAll()
+                        .requestMatchers("/api/v1/cors/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/cors/**").permitAll()
                         .requestMatchers("/api/v1/oauth/kakao/**").permitAll()
                         .anyRequest().authenticated())

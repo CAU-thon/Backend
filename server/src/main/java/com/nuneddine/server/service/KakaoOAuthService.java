@@ -6,17 +6,26 @@ import com.nuneddine.server.dto.response.KakaoOAuthTokenResponseDto;
 import com.nuneddine.server.repository.MemberJpaRepository;
 import com.nuneddine.server.util.KakaoUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Service
 @RequiredArgsConstructor
 public class KakaoOAuthService {
 
     private final JwtUtil jwtUtil;
     private final MemberJpaRepository memberJpaRepository;
 
-    private final String clientId = "531d63d0737f13134bb2417073a24a0e";
-    private final String clientSecret = "tWaPuWHNPVfhUOnLd342qk7X0V9zzyTs";
+    @Value("${kakao.client.id}")
+    private String clientId;
+
+    @Value("${kakao.client.secret}")
+    private String clientSecret;
+
+    @Value("${kakao.redirect-uri}")
+    private String redirectUri;
 
     public String exchangeCodeForAccessToken(String code) {
         WebClient webClient = WebClient.builder().build();
@@ -27,7 +36,7 @@ public class KakaoOAuthService {
                         .with("client_secret", clientSecret)
                         .with("code", code)
                         .with("grant_type", "authorization_code")
-                        .with("redirect_uri", "http://localhost:3000/oauth/callback"))
+                        .with("redirect_uri", redirectUri))
                 .retrieve()
                 .bodyToMono(KakaoOAuthTokenResponseDto.class)
                 .block();
