@@ -19,11 +19,13 @@ public class Item {
 
     @Column(unique = true) // 일단 unique로 해둠
     private String itemName;
+    private String imgUrl; // custom item용 imgUrl, default=null
     private ItemCategory itemCategory;
 
     @Builder
-    public Item(String itemName, ItemCategory itemCategory) {
+    public Item(String itemName, String imgUrl,ItemCategory itemCategory) {
         this.itemName = itemName;
+        this.imgUrl = imgUrl;
         this.itemCategory = itemCategory;
     }
 }
