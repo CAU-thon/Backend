@@ -21,9 +21,6 @@ public class KakaoOAuthService {
     @Value("${kakao.client.id}")
     private String clientId;
 
-    @Value("${kakao.client.secret}")
-    private String clientSecret;
-
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
@@ -33,7 +30,6 @@ public class KakaoOAuthService {
         KakaoOAuthTokenResponseDto tokenResponse = webClient.post()
                 .uri("https://kauth.kakao.com/oauth/token")
                 .body(BodyInserters.fromFormData("client_id", clientId)
-                        .with("client_secret", clientSecret)
                         .with("code", code)
                         .with("grant_type", "authorization_code")
                         .with("redirect_uri", redirectUri))
