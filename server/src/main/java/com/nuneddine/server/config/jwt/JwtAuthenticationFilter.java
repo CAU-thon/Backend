@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 예외 경로 확인
         String path = request.getRequestURI();
-        if (path.startsWith("/api/v1/cors/") || path.startsWith("/api/v1/oauth/kakao/")) {
+        if (path.startsWith("/api/v1/cors") || path.startsWith("/api/v1/cors/") || path.startsWith("/api/v1/oauth/kakao/")) {
             // 지정된 경로는 필터 적용 없이 바로 다음 필터로 넘어감
             filterChain.doFilter(request, response);
             return;
