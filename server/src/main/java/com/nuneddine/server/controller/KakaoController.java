@@ -2,6 +2,7 @@ package com.nuneddine.server.controller;
 
 import com.nuneddine.server.config.jwt.JwtUtil;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
+import com.nuneddine.server.dto.response.JwtResponseDto;
 import com.nuneddine.server.service.KakaoOAuthService;
 import com.nuneddine.server.util.KakaoUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class KakaoController {
         Long id = kakaoUser.getId();
         String jwt = jwtUtil.generateToken(id);
 
-        return ResponseEntity.ok().body(Map.of("jwt", jwt));
+        JwtResponseDto response = new JwtResponseDto();
+        response.setToken(jwt);
+
+        return ResponseEntity.ok(response);
     }
 }
