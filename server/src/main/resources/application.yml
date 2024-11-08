@@ -1,6 +1,7 @@
 spring:
+  config:
+    import: classpath:SECRET.yml
   profiles:
-    include: SECRET
     active: ec2
 
   jpa:
