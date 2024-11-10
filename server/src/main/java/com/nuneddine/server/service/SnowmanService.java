@@ -17,7 +17,7 @@ public class SnowmanService {
 
     @Transactional
     private List<SnowmanResponseDto> getSnowmansByMap(int mapNumber) {
-        List<Snowman> snowmans = snowmanRepository.findByMap(mapNumber);
+        List<Snowman> snowmans = snowmanRepository.findByMapNumber(mapNumber);
 
         // 눈사람의 id, 이미지, 위치를 반환
         return snowmans.stream()

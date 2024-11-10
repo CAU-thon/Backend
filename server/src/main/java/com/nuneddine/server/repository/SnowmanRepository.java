@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface SnowmanRepository extends JpaRepository<Snowman, Long> {
     Snowman findById(int id);
-    List<Snowman> findByMap(int map);
+    List<Snowman> findByMapNumber(int mapNumber);
     List<Snowman> findByMember(Member member);
 }
