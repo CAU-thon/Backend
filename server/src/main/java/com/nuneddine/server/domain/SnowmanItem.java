@@ -25,9 +25,16 @@ public class SnowmanItem {
     @JoinColumn(name = "itemId", nullable = false)
     private Item item;
 
+    private double posX;
+    private double posY;
+    private double posZ;
+
     @Builder
-    public SnowmanItem(Snowman snowman, Item item) {
+    public SnowmanItem(Snowman snowman, Item item, double posX, double posY, double posZ) {
         this.snowman = snowman;
         this.item = item;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
     }
 }

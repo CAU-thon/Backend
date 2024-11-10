@@ -1,10 +1,9 @@
 package com.nuneddine.server.service;
 
-import com.nuneddine.server.domain.Item;
-import com.nuneddine.server.domain.Member;
-import com.nuneddine.server.domain.MemberItem;
+import com.nuneddine.server.domain.*;
 import com.nuneddine.server.repository.ItemRepository;
 import com.nuneddine.server.repository.MemberItemRepository;
+import com.nuneddine.server.repository.SnowmanItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,8 @@ public class ItemService {
     private ItemRepository itemJpaRepository;
     @Autowired
     private MemberItemRepository memberItemRepository;
+    @Autowired
+    private SnowmanItemRepository snowmanItemRepository;
 
     // 아이템 가챠(모든 아이템 기준)
     public Item gachaItem(Member member) {
@@ -46,6 +47,14 @@ public class ItemService {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
+                .collect(Collectors.toList());
+    }
+
+    // 특정 Snowman의 SnowmanItem 모두 호출
+    private List<Item> getItemsBySnowman(Snowman snowman) {
+        List<SnowmanItem> snowmanItems = snowmanItemRepository.findBySnowman(snowman);
+        return snowmanItems.stream()
+                .map(SnowmanItem::getItem)
                 .collect(Collectors.toList());
     }
 }
