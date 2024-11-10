@@ -32,6 +32,7 @@ public class MemberController {
                 .build(member.getBuild())
                 .chance(member.getChance())
                 .point(member.getPoint())
+                .image(member.getImage())
                 .build();
 
         return ResponseEntity.ok(responseDto);
