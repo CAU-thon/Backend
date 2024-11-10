@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class JwtResponseDto {
-    private String token;
+public class UpdateUsernameResponseDto {
+    private Long id;
+    private String username;
 }
