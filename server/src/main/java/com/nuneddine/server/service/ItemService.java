@@ -2,6 +2,7 @@ package com.nuneddine.server.service;
 
 import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
+import com.nuneddine.server.dto.response.MemberItemResponse;
 import com.nuneddine.server.repository.ItemRepository;
 import com.nuneddine.server.repository.MemberItemRepository;
 import com.nuneddine.server.repository.SnowmanItemRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,14 +59,14 @@ public class ItemService {
 
     // 특정 Snowman의 SnowmanItem 모두 호출
     @Transactional
-    private List<SnowmanItem> getItemsBySnowman(Snowman snowman) {
+    public List<SnowmanItem> getItemsBySnowman(Snowman snowman) {
         List<SnowmanItem> snowmanItems = snowmanItemRepository.findBySnowman(snowman);
         return snowmanItems;
     }
 
     // SnowmanItem 에 Item 추가
     @Transactional
-    private void addItemIntoSnowman(Snowman snowman, SnowmanItemRequest request) {
+    public void addItemIntoSnowman(Snowman snowman, SnowmanItemRequest request) {
         SnowmanItem newSnowManItem = SnowmanItem.builder()
                 .posX(request.getPosX())
                 .posY(request.getPosY())
@@ -76,13 +78,13 @@ public class ItemService {
 
     // SnowmanItem 삭제
     @Transactional
-    private void deleteSnowmanItem(SnowmanItemRequest request) {
+    public void deleteSnowmanItem(SnowmanItemRequest request) {
         snowmanItemRepository.deleteSnowmanItemByItem(itemRepository.getItemById(request.getId()));
     }
 
     // SnowmanItem 수정
     @Transactional
-    private SnowmanItem updateSnowmanItem(SnowmanItemRequest request) {
+    public SnowmanItem updateSnowmanItem(SnowmanItemRequest request) {
         SnowmanItem snowmanItem = snowmanItemRepository.findByItem(itemRepository.getItemById(request.getId()))
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 아이템이 없습니다."));
 
@@ -92,5 +94,27 @@ public class ItemService {
 
         snowmanItemRepository.save(snowmanItem);
         return snowmanItem;
+    }
+
+    // mypage에서 본인의 아이템 인벤토리 확인
+    @Transactional
+    public List<MemberItemResponse> getAllMemberItem(Member member) {
+        List<Item> allItems = itemRepository.findAll();
+        List<Item> memberItems = getItemsByMember(member);
+
+        // memberItems에서 ItemId list 만들기
+        Set<Long> memberItemIds = memberItems.stream()
+                .map(Item::getId)
+                .collect(Collectors.toSet());
+
+        // allItems를 순회하면서 없으면 isUnlock = true로 설정
+        List<MemberItemResponse> memberItemResponses = allItems.stream()
+                .map(item -> {
+                    boolean isUnlocked = !memberItemIds.contains(item.getId());
+                    return new MemberItemResponse(isUnlocked, item.getId());
+                })
+                .collect(Collectors.toList());
+
+        return memberItemResponses;
     }
 }
