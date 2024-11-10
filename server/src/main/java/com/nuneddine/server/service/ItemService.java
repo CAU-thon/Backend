@@ -41,7 +41,9 @@ public class ItemService {
         // ex. 과잠용 아이템 풀 따로 만들어서 안에서는 무차별하게
         if (!gachaItemPool.isEmpty()) {
             Random random = new Random();
-            return gachaItemPool.get(random.nextInt(gachaItemPool.size()));
+            Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
+            addItemIntoMember(member, gachaItem);
+            return gachaItem;
         }
 
         // 뽑을 아이템이 없는 경우
@@ -62,6 +64,16 @@ public class ItemService {
     public List<SnowmanItem> getItemsBySnowman(Snowman snowman) {
         List<SnowmanItem> snowmanItems = snowmanItemRepository.findBySnowman(snowman);
         return snowmanItems;
+    }
+
+    // Member 에 Item 추가
+    @Transactional
+    public void addItemIntoMember(Member member, Item item) {
+        MemberItem newMemberItem = MemberItem.builder()
+                .item(item)
+                .member(member)
+                .build();
+        memberItemRepository.save(newMemberItem);
     }
 
     // SnowmanItem 에 Item 추가
