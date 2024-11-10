@@ -29,8 +29,7 @@ public class ItemController {
 
     private Member getMember(String header) {
         String token = header.substring(7);
-        //Long memberId = jwtService.getMemberIdFromToken(token);
-        Long memberId = 1L;
+        Long memberId = jwtService.getMemberIdFromToken(token);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("해당 ID의 멤버가 존재하지 않습니다."));
         return member;
