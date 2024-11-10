@@ -36,4 +36,8 @@ public class Member {
         this.point = point;
         this.image = image;
     }
+
+    public void updateImage(String image) {
+        this.image = image;
+    }
 }
