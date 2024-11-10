@@ -1,10 +1,13 @@
 package com.nuneddine.server.controller;
 
 import com.nuneddine.server.config.jwt.JwtUtil;
+import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.response.JwtResponseDto;
 import com.nuneddine.server.service.KakaoOAuthService;
+import com.nuneddine.server.service.MemberService;
 import com.nuneddine.server.util.KakaoUser;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/v1/oauth/kakao")
 public class KakaoController {
 
-    @Autowired
     private KakaoOAuthService kakaoOAuthService;
-
-    @Autowired
+    private MemberService memberService;
     private JwtUtil jwtUtil;
 
     @PostMapping("/token")
@@ -30,8 +32,9 @@ public class KakaoController {
         String accessToken = kakaoOAuthService.exchangeCodeForAccessToken(authorizationCode);
 
         KakaoUser kakaoUser = kakaoOAuthService.fetchKakaoUserInfo(accessToken);
-        Long id = kakaoUser.getId();
-        String jwt = jwtUtil.generateToken(id);
+        Long kakaoId = kakaoUser.getId();
+        Member member = memberService.getMemberByKakaoId(kakaoId);
+        String jwt = jwtUtil.generateToken(member.getId());
 
         JwtResponseDto response = new JwtResponseDto();
         response.setToken(jwt);

@@ -20,25 +20,25 @@ public class JwtUtil {
     private long expirationTime;
 
     //jwt 생성
-    public String generateToken(Long kakaoId) {
+    public String generateToken(Long id) {
         return Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .setSubject(String.valueOf(kakaoId))
+                .setSubject(String.valueOf(id))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .compact();
     }
 
-    //jwt에서 사용자 kakaoId 추출
+    //jwt에서 사용자 id 추출
     public Long extractKakaoId(String token) {
-        String kakaoIdStr = Jwts.parserBuilder()
+        String memberIdStr = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
 
-        return Long.parseLong(kakaoIdStr);
+        return Long.parseLong(memberIdStr);
     }
 
     // 토큰 검증
