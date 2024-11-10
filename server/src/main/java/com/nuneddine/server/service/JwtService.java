@@ -10,7 +10,7 @@ public class JwtService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public Long getKakaoIdFromToken(String token) {
-        return jwtUtil.extractKakaoId(token);
+    public Long getMemberIdFromToken(String token) {
+        return jwtUtil.extractMemberId(token);
     }
 }

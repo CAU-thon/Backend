@@ -28,10 +28,9 @@ public class corsController {
     @GetMapping("/jwt")
     public ResponseEntity<?> jwtAvailable(@RequestHeader("Authorization") String header) {
         String token = header.substring(7);
-        System.out.println(token);
-        Long kakaoId = jwtService.getKakaoIdFromToken(token);
+        Long id = jwtService.getMemberIdFromToken(token);
 
-        return ResponseEntity.ok(new Tempo(String.valueOf(kakaoId)));
+        return ResponseEntity.ok(new Tempo(String.valueOf(id)));
     }
 
     @Getter

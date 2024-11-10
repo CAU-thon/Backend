@@ -40,4 +40,8 @@ public class Member extends BaseTimeEntity {
     public void updateImage(String image) {
         this.image = image;
     }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
 }
