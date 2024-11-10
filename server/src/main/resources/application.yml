@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:SECRET.yml
   profiles:
-    active: ec2
+    active: dev
 
   jpa:
     show-sql: true

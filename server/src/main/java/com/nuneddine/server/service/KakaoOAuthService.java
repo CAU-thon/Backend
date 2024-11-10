@@ -3,7 +3,7 @@ package com.nuneddine.server.service;
 import com.nuneddine.server.config.jwt.JwtUtil;
 import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.dto.response.KakaoOAuthTokenResponseDto;
-import com.nuneddine.server.repository.MemberJpaRepository;
+import com.nuneddine.server.repository.MemberRepository;
 import com.nuneddine.server.util.KakaoUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class KakaoOAuthService {
 
     private final JwtUtil jwtUtil;
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
 
     @Value("${kakao.client.id}")
     private String clientId;
@@ -56,7 +56,7 @@ public class KakaoOAuthService {
                 .bodyToMono(KakaoUser.class)
                 .block();
 
-        Member member = memberJpaRepository.findByKakaoId(kakaoUser.getId())
+        Member member = memberRepository.findByKakaoId(kakaoUser.getId())
                 .orElseGet(() -> Member.builder()
                         .kakaoId(kakaoUser.getId())
                         .username(kakaoUser.getKakaoAccount().getProfile().getNickname())
@@ -67,13 +67,13 @@ public class KakaoOAuthService {
                         .build());
 
         if (member.getId() == null) {
-            memberJpaRepository.save(member);
+            memberRepository.save(member);
         }
 
         String image = kakaoUser.getKakaoAccount().getProfile().getImage();
         if (member.getImage() != image) {
             member.updateImage(image);
-            memberJpaRepository.save(member);
+            memberRepository.save(member);
         }
 
         return kakaoUser;
