@@ -2,6 +2,7 @@ package com.nuneddine.server.service;
 
 import com.nuneddine.server.domain.Choice;
 import com.nuneddine.server.domain.Member;
+import com.nuneddine.server.domain.MemberSnowman;
 import com.nuneddine.server.domain.Snowman;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
@@ -9,6 +10,7 @@ import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
 import com.nuneddine.server.repository.ChoiceRepository;
+import com.nuneddine.server.repository.MemberSnowmanRepository;
 import com.nuneddine.server.repository.SnowmanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,8 @@ public class SnowmanService {
     SnowmanRepository snowmanRepository;
     @Autowired
     ChoiceRepository choiceRepository;
+    @Autowired
+    MemberSnowmanRepository memberSnowmanRepository;
 
     @Transactional
     public List<SnowmanResponseDto> findSnowmansByMap(int mapNumber) {
@@ -110,5 +115,34 @@ public class SnowmanService {
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
 
         return new SnowmanQuizResponseDto(snowman.getId(), snowman.getName(), snowman.getImage(), snowman.getQuiz(), snowman.getAnswerId(), choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent());
+    }
+
+    @Transactional
+    public Boolean solveSnowmanQuiz(Long snowmanId, Long number, Member member) {
+        Snowman snowman = snowmanRepository.findById(snowmanId)
+                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
+
+        // 해당 사용자가 이미 푼 퀴즈라면
+        if (memberSnowmanRepository.findByMemberAndSnowman(member, snowman).isPresent()) {
+            throw new IllegalStateException("이미 퀴즈를 푼 기록이 있습니다.");
+        }
+
+        // 새로운 member snowman 추가
+        MemberSnowman memberSnowman = MemberSnowman.builder()
+                .member(member)
+                .snowman(snowman)
+                .myChoice(number)
+                .build();
+        memberSnowmanRepository.save(memberSnowman);
+
+        List<Choice> choices = choiceRepository.findBySnowman(snowman);
+
+        choices.get(number.intValue()-1).countUp(); // 사용자가 고른 답안의 count 수를 1 올림
+        if (Objects.equals(snowman.getAnswerId(), number)) { // 사용자가 고른 답이 정답이라면
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

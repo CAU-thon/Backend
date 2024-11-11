@@ -38,11 +38,11 @@ public class SnowmanController {
     }
 
     // 맵 눈사람 생성하기
-    @PostMapping("/map/{mapNumer}/snowman")
+    @PostMapping("/map/{mapNumber}/snowman")
     public ResponseEntity<Long> createSnowman(@RequestBody SnowmanRequestDto snowmanRequestDto, @PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header) {
         String token = header.substring(7);
         Long memberId = jwtService.getMemberIdFromToken(token);
-        Member member = memberService.getMemberByKakaoId(memberId);
+        Member member = memberService.getMemberById(memberId);
 
         Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
         return new ResponseEntity<>(snowmanId, HttpStatus.CREATED);
@@ -53,7 +53,7 @@ public class SnowmanController {
     public ResponseEntity<List<SnowmanDetailResponseDto>> getMySnowman(@RequestHeader("Authorization") String header) {
         String token = header.substring(7);
         Long memberId = jwtService.getMemberIdFromToken(token);
-        Member member = memberService.getMemberByKakaoId(memberId);
+        Member member = memberService.getMemberById(memberId);
 
         List<SnowmanDetailResponseDto> snowmans = snowmanService.findMySnowman(member);
         if (snowmans.isEmpty()) {
@@ -69,5 +69,16 @@ public class SnowmanController {
     public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId) {
         SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId);
         return ResponseEntity.ok(snowmanQuizResponseDto);
+    }
+
+    // 눈사람 퀴즈 맞추기
+    @PostMapping("/snowman/{snowmanId}")
+    public ResponseEntity<Boolean> solveSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId, @RequestHeader("Authorization") String header, @RequestBody Long number) {
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberById(memberId);
+
+        Boolean isAnswer = snowmanService.solveSnowmanQuiz(snowmanId, number, member);
+        return ResponseEntity.ok(isAnswer);
     }
 }
