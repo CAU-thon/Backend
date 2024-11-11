@@ -51,11 +51,13 @@ public class ItemService {
     }
 
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
+    // 이때, 만약 커스텀 아이템 (imgUrl != null)인 경우에는 포함하면 안됨!
     @Transactional
     private List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
+                .filter(item -> item.getImgUrl() == null)
                 .collect(Collectors.toList());
     }
 
