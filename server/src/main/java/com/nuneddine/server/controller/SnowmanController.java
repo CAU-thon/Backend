@@ -1,13 +1,15 @@
 package com.nuneddine.server.controller;
 
+import com.nuneddine.server.domain.Member;
+import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
+import com.nuneddine.server.service.JwtService;
+import com.nuneddine.server.service.MemberService;
 import com.nuneddine.server.service.SnowmanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +18,10 @@ import java.util.List;
 public class SnowmanController {
     @Autowired
     SnowmanService snowmanService;
+    @Autowired
+    JwtService jwtService;
+    @Autowired
+    MemberService memberService;
 
     // 맵 눈사람 리스트업
     @GetMapping("/map/{mapNumber}")
@@ -27,5 +33,16 @@ public class SnowmanController {
         else {
             return ResponseEntity.ok(snowmans);
         }
+    }
+
+    // 맵 눈사람 생성하기
+    @PostMapping("/map/{mapNumer}/snowman")
+    public ResponseEntity<Long> createSnowman(@RequestBody SnowmanRequestDto snowmanRequestDto, @PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header) {
+        String token = header.substring(7);
+        Long memberId = jwtService.getKakaoIdFromToken(token);
+        Member member = memberService.getMemberByKakaoId(memberId);
+
+        Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
+        return new ResponseEntity<>(snowmanId, HttpStatus.CREATED);
     }
 }

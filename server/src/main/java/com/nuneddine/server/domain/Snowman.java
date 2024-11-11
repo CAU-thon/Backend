@@ -1,9 +1,8 @@
 package com.nuneddine.server.domain;
 
+import com.nuneddine.server.service.SnowmanService;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -30,4 +29,17 @@ public class Snowman extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "memberId")
     private Member member; // 해당 눈사람을 만든 사용자
+
+    @Builder
+    Snowman(String color, SnowmanShape snowmanShape, String image, int mapNumber, double posX, double posY, String quiz, Long answerId, Member member) {
+        this.color = color;
+        this.snowmanShape = snowmanShape;
+        this.image = image;
+        this.mapNumber = mapNumber;
+        this.posX = posX;
+        this.posY = posY;
+        this.quiz = quiz;
+        this.answerId = answerId;
+        this.member = member;
+    }
 }
