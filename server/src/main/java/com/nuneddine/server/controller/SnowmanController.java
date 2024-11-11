@@ -39,7 +39,7 @@ public class SnowmanController {
     @PostMapping("/map/{mapNumer}/snowman")
     public ResponseEntity<Long> createSnowman(@RequestBody SnowmanRequestDto snowmanRequestDto, @PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header) {
         String token = header.substring(7);
-        Long memberId = jwtService.getKakaoIdFromToken(token);
+        Long memberId = jwtService.getMemberIdFromToken(token);
         Member member = memberService.getMemberByKakaoId(memberId);
 
         Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
