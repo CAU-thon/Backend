@@ -1,6 +1,7 @@
 package com.nuneddine.server.controller;
 
 import com.nuneddine.server.domain.Member;
+import com.nuneddine.server.dto.request.SolveQuizRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
@@ -73,10 +74,11 @@ public class SnowmanController {
 
     // 눈사람 퀴즈 맞추기
     @PostMapping("/snowman/{snowmanId}")
-    public ResponseEntity<Boolean> solveSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId, @RequestHeader("Authorization") String header, @RequestBody Long number) {
+    public ResponseEntity<Boolean> solveSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId, @RequestHeader("Authorization") String header, @RequestBody SolveQuizRequestDto solveQuizRequestDto) {
         String token = header.substring(7);
         Long memberId = jwtService.getMemberIdFromToken(token);
         Member member = memberService.getMemberById(memberId);
+        Long number = solveQuizRequestDto.getNumber();
 
         Boolean isAnswer = snowmanService.solveSnowmanQuiz(snowmanId, number, member);
         return ResponseEntity.ok(isAnswer);
