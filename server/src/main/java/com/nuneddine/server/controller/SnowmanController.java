@@ -66,7 +66,7 @@ public class SnowmanController {
 
     // 눈사람 퀴즈 보기
     @GetMapping("/snowman/{snowmanId}")
-    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") int snowmanId) {
+    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId) {
         SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId);
         return ResponseEntity.ok(snowmanQuizResponseDto);
     }
