@@ -16,6 +16,7 @@ public class Snowman extends BaseTimeEntity {
     @Column(name = "snowmanId")
     private Long id;
 
+    private String name;
     private String color;
     private SnowmanShape snowmanShape;
     private String image; // 눈사람 이미지
@@ -31,7 +32,8 @@ public class Snowman extends BaseTimeEntity {
     private Member member; // 해당 눈사람을 만든 사용자
 
     @Builder
-    Snowman(String color, SnowmanShape snowmanShape, String image, int mapNumber, double posX, double posY, String quiz, Long answerId, Member member) {
+    Snowman(String name, String color, SnowmanShape snowmanShape, String image, int mapNumber, double posX, double posY, String quiz, Long answerId, Member member) {
+        this.name = name;
         this.color = color;
         this.snowmanShape = snowmanShape;
         this.image = image;

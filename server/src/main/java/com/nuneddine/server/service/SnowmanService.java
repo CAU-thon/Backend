@@ -36,6 +36,7 @@ public class SnowmanService {
     @Transactional
     public Long createSnowman(SnowmanRequestDto snowmanRequestDto, int mapNumber, Member member) {
         Snowman snowman = Snowman.builder()
+                .name(snowmanRequestDto.getName())
                 .color(snowmanRequestDto.getColor())
                 .snowmanShape(snowmanRequestDto.getSnowmanShape())
                 .image(snowmanRequestDto.getImage())

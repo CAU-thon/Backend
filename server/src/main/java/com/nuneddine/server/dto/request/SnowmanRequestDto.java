@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class SnowmanRequestDto {
     private Long id;
+    private String name;
     private String color;
     private SnowmanShape snowmanShape;
     private String image;
