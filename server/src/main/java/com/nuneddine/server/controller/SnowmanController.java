@@ -18,7 +18,7 @@ public class SnowmanController {
     SnowmanService snowmanService;
 
     // 맵 눈사람 리스트업
-    @GetMapping("/{mapNumber}")
+    @GetMapping("/map/{mapNumber}")
     public ResponseEntity<List<SnowmanResponseDto>> getSnowmansByMapNumber(@PathVariable(value = "mapNumber") int mapNumber) {
         List<SnowmanResponseDto> snowmans = snowmanService.findSnowmansByMap(mapNumber);
         if (snowmans.isEmpty()) {
