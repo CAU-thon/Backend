@@ -3,6 +3,7 @@ package com.nuneddine.server.controller;
 import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
+import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
 import com.nuneddine.server.service.JwtService;
 import com.nuneddine.server.service.MemberService;
@@ -61,5 +62,12 @@ public class SnowmanController {
         else {
             return ResponseEntity.ok(snowmans);
         }
+    }
+
+    // 눈사람 퀴즈 보기
+    @GetMapping("/snowman/{snowmanId}")
+    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") int snowmanId) {
+        SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId);
+        return ResponseEntity.ok(snowmanQuizResponseDto);
     }
 }

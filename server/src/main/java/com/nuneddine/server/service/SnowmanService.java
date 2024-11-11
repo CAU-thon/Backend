@@ -6,6 +6,7 @@ import com.nuneddine.server.domain.Snowman;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
+import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
 import com.nuneddine.server.repository.ChoiceRepository;
 import com.nuneddine.server.repository.SnowmanRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,5 +101,14 @@ public class SnowmanService {
         }
 
         return snowmanDetailResponseDtos;
+    }
+
+    @Transactional
+    public SnowmanQuizResponseDto findSnowmanQuiz(Long snowmanId) {
+        Snowman snowman = snowmanRepository.findById(snowmanId)
+                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
+        List<Choice> choices = choiceRepository.findBySnowman(snowman);
+
+        return new SnowmanQuizResponseDto(snowman.getId(), snowman.getName(), snowman.getImage(), snowman.getQuiz(), snowman.getAnswerId(), choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent());
     }
 }
