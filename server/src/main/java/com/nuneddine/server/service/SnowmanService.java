@@ -5,6 +5,7 @@ import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.domain.Snowman;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
+import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
 import com.nuneddine.server.repository.ChoiceRepository;
 import com.nuneddine.server.repository.SnowmanRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,5 +73,31 @@ public class SnowmanService {
         choiceRepository.save(choice3);
 
         return snowman.getId();
+    }
+
+    @Transactional
+    public List<SnowmanDetailResponseDto> findMySnowman(Member member) {
+        List<Snowman> snowmans = snowmanRepository.findByMember(member);
+
+        List<SnowmanDetailResponseDto> snowmanDetailResponseDtos = new ArrayList<>();
+        for (Snowman snowman : snowmans) {
+            int correctCount = 0; // 맞춘 사람
+            int incorrectCount = 0; // 틀린 사람
+            List<Choice> choices = choiceRepository.findBySnowman(snowman);
+
+            for (int i = 0; i < 3; i++) {
+                if (i == snowman.getAnswerId()-1) {
+                    correctCount += choices.get(i).getCount();
+                }
+                else {
+                    incorrectCount += choices.get(i).getCount();
+                }
+            }
+
+            SnowmanDetailResponseDto dto = new SnowmanDetailResponseDto(snowman.getId(), snowman.getName(), snowman.getImage(), correctCount, incorrectCount);
+            snowmanDetailResponseDtos.add(dto);
+        }
+
+        return snowmanDetailResponseDtos;
     }
 }

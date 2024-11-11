@@ -2,6 +2,7 @@ package com.nuneddine.server.controller;
 
 import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
+import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
 import com.nuneddine.server.service.JwtService;
 import com.nuneddine.server.service.MemberService;
@@ -44,5 +45,21 @@ public class SnowmanController {
 
         Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
         return new ResponseEntity<>(snowmanId, HttpStatus.CREATED);
+    }
+
+    // 본인이 만든 눈사람 리스트업
+    @GetMapping("/my-snowman")
+    public ResponseEntity<List<SnowmanDetailResponseDto>> getMySnowman(@RequestHeader("Authorization") String header) {
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberByKakaoId(memberId);
+
+        List<SnowmanDetailResponseDto> snowmans = snowmanService.findMySnowman(member);
+        if (snowmans.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.ok(snowmans);
+        }
     }
 }
