@@ -5,6 +5,7 @@ import com.nuneddine.server.domain.MemberSnowman;
 import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
 import com.nuneddine.server.dto.request.SolveQuizRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
+import com.nuneddine.server.dto.response.SnowmanAllDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
@@ -65,6 +66,12 @@ public class SnowmanController {
         else {
             return ResponseEntity.ok(snowmans);
         }
+    }
+
+    @GetMapping("/snowman/detail/{snowmanId}")
+    public ResponseEntity<SnowmanAllDetailResponseDto> allDailSnowman(@PathVariable(value = "snowmanId") Long snowmanId) {
+        SnowmanAllDetailResponseDto responseDto = snowmanService.allDetailSnowman(snowmanId);
+        return ResponseEntity.ok(responseDto);
     }
 
     // 눈사람 수정하기

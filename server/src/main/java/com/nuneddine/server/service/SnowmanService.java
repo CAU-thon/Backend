@@ -4,6 +4,7 @@ import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
+import com.nuneddine.server.dto.response.SnowmanAllDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
@@ -114,6 +115,25 @@ public class SnowmanService {
         }
 
         return snowmanDetailResponseDtos;
+    }
+
+    @Transactional
+    public SnowmanAllDetailResponseDto allDetailSnowman(Long snowmanId) {
+        Snowman snowman = snowmanRepository.findById(snowmanId)
+                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
+        List<Choice> choices = choiceRepository.findBySnowman(snowman);
+        List<SnowmanItem> snowmanItems = snowmanItemRepository.findBySnowman(snowman);
+
+        SnowmanAllDetailResponseDto responseDto = new SnowmanAllDetailResponseDto(
+                snowmanId, snowman.getName(), snowman.getColor(), snowman.getSnowmanShape(),
+                snowman.getImage(), snowman.getMapNumber(), snowman.getPosX(), snowman.getPosY(),
+                snowman.getMember(),
+                snowmanItems,
+                snowman.getQuiz(), snowman.getAnswerId(),
+                choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent()
+        );
+
+        return responseDto;
     }
 
     @Transactional
