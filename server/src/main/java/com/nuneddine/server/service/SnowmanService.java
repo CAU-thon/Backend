@@ -1,17 +1,12 @@
 package com.nuneddine.server.service;
 
-import com.nuneddine.server.domain.Choice;
-import com.nuneddine.server.domain.Member;
-import com.nuneddine.server.domain.MemberSnowman;
-import com.nuneddine.server.domain.Snowman;
+import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
-import com.nuneddine.server.repository.ChoiceRepository;
-import com.nuneddine.server.repository.MemberSnowmanRepository;
-import com.nuneddine.server.repository.SnowmanRepository;
+import com.nuneddine.server.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,9 +23,13 @@ public class SnowmanService {
     @Autowired
     SnowmanRepository snowmanRepository;
     @Autowired
+    ItemRepository itemRepository;
+    @Autowired
     ChoiceRepository choiceRepository;
     @Autowired
     MemberSnowmanRepository memberSnowmanRepository;
+    @Autowired
+    SnowmanItemRepository snowmanItemRepository;
 
     @Transactional
     public List<SnowmanResponseDto> findSnowmansByMap(int mapNumber) {
@@ -57,6 +56,14 @@ public class SnowmanService {
                 .member(member)
                 .build();
         snowmanRepository.save(snowman);
+
+        List<SnowmanItem> snowmanItems = snowmanRequestDto.getSnowmanItemRequests()
+                .stream()
+                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId()), item.getPosX(), item.getPosY(), item.getPosZ()))
+                .collect(Collectors.toList());
+        for (SnowmanItem snowmanItem : snowmanItems) {
+            snowmanItemRepository.save(snowmanItem);
+        }
 
         Choice choice1 = Choice.builder()
                 .snowman(snowman)

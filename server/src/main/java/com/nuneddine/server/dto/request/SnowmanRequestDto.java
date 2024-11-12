@@ -4,6 +4,8 @@ import com.nuneddine.server.domain.SnowmanShape;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class SnowmanRequestDto {
@@ -14,6 +16,7 @@ public class SnowmanRequestDto {
     private String image;
     private double posX;
     private double posY;
+    private List<SnowmanItemRequest> snowmanItemRequests;
 
     private String quiz;
     private Long answerId;
