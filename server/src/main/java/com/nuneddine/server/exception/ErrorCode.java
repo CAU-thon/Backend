@@ -12,6 +12,7 @@ public enum ErrorCode {
     AWS_S3_ACCESS_DENIED(HttpStatus.FORBIDDEN, "AWS-001", "AWS S3에 접근할 수 있는 권한이 없거나 인증에 실패했습니다."),
     AWS_S3_NOT_CONNECTED(HttpStatus.SERVICE_UNAVAILABLE, "AWS-002", "AWS S3 연결에 실패했습니다."),
     FAILED_TO_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "AWS-003", "파일 읽기 오류 혹은 잘못된 입력입니다."),
+    FILE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "FILE-001", "업로드하려는 파일의 크기가 너무 큽니다."),
     ;
 
     private final HttpStatus httpStatus;
