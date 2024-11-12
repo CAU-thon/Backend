@@ -32,6 +32,8 @@ public class SecurityConfig {
                 .cors((SecurityConfig::corsAllow))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/cors/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/cors/**").permitAll()
                         .requestMatchers("/api/v1/oauth/kakao/**").permitAll()
