@@ -1,6 +1,8 @@
 package com.nuneddine.server.controller;
 
 import com.nuneddine.server.domain.Member;
+import com.nuneddine.server.domain.MemberSnowman;
+import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
 import com.nuneddine.server.dto.request.SolveQuizRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
@@ -63,6 +65,18 @@ public class SnowmanController {
         else {
             return ResponseEntity.ok(snowmans);
         }
+    }
+
+    // 눈사람 수정하기
+    @PatchMapping("/snowman/detail/{snowmanId}")
+    public ResponseEntity<Long> updateSnowman(@RequestHeader("Authorization") String header, @PathVariable(value = "snowmanId") Long snowmanId, @RequestBody SnowmanUpdateRequestDto requestDto) {
+        // 본인 눈사람만 수정 가능
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberById(memberId);
+
+        Long Id = snowmanService.updateSnowman(snowmanId, requestDto, member);
+        return new ResponseEntity<>(Id, HttpStatus.CREATED);
     }
 
     // 눈사람 퀴즈 보기

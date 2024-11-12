@@ -1,6 +1,5 @@
 package com.nuneddine.server.domain;
 
-import com.nuneddine.server.service.SnowmanService;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,5 +42,12 @@ public class Snowman extends BaseTimeEntity {
         this.quiz = quiz;
         this.answerId = answerId;
         this.member = member;
+    }
+
+    public void updateSnowman(String name, String color, SnowmanShape snowmanShape, String image) {
+        this.name = name;
+        this.color = color;
+        this.snowmanShape = snowmanShape;
+        this.image = image;
     }
 }

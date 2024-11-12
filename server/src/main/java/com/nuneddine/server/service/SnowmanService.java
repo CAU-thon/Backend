@@ -3,6 +3,7 @@ package com.nuneddine.server.service;
 import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
+import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
@@ -113,6 +114,35 @@ public class SnowmanService {
         }
 
         return snowmanDetailResponseDtos;
+    }
+
+    @Transactional
+    public Long updateSnowman(Long snowmanId, SnowmanUpdateRequestDto requestDto, Member member) {
+        Snowman snowman = snowmanRepository.findById(snowmanId)
+                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
+
+        // 해당 사용자가 만든 눈사람만 수정 가능
+        if (snowman.getMember() != member) {
+            throw new RuntimeException("본인이 만든 눈사람이 아닙니다.");
+        }
+
+        snowman.updateSnowman(requestDto.getName(), requestDto.getColor(), requestDto.getSnowmanShape(), requestDto.getImage());
+
+        // 원래 가지고 있던 아이템들 삭제 후 재생성
+        List<SnowmanItem> beforeItems = snowmanItemRepository.findBySnowman(snowman);
+        for (SnowmanItem item : beforeItems) {
+            snowmanItemRepository.delete(item);
+        }
+
+        List<SnowmanItem> afterItems = requestDto.getSnowmanItemRequests()
+                .stream()
+                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId()), item.getPosX(), item.getPosY(), item.getPosZ()))
+                .collect(Collectors.toList());
+        for (SnowmanItem snowmanItem : afterItems) {
+            snowmanItemRepository.save(snowmanItem);
+        }
+
+        return snowman.getId();
     }
 
     @Transactional
