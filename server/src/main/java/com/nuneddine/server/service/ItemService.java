@@ -70,8 +70,8 @@ public class ItemService {
     }
 
     @Transactional
-    public void setDefaultItems(Member member, List<Item> defaultItems) {
-        for(Item item : defaultItems) {
+    public void setDefaultItems(Member member) {
+        for(Item item : getDefaultItems()) {
             addItemIntoMember(member, item);
         }
     }
@@ -102,7 +102,7 @@ public class ItemService {
 
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
     @Transactional
-    private List<Item> getItemsByMember(Member member) {
+    public List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
