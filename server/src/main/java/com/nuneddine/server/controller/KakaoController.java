@@ -7,6 +7,7 @@ import com.nuneddine.server.dto.response.JwtResponseDto;
 import com.nuneddine.server.service.KakaoOAuthService;
 import com.nuneddine.server.service.MemberService;
 import com.nuneddine.server.util.KakaoUser;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ public class KakaoController {
     private MemberService memberService;
     private JwtUtil jwtUtil;
 
+    @Operation(summary = "jwt 토큰 발급 api", description = "인가 코드를 사용하여 카카오 사용자 조회 및 jwt 토큰 반환")
     @PostMapping("/token")
     public ResponseEntity<?> getAccessToken(@RequestBody KakaoOAuthRequestDto request) {
         String authorizationCode = request.getAuthorization_code();
