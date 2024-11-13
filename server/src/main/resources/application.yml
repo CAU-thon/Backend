@@ -33,13 +33,14 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 logging:
   level:
     root: INFO
     org.springframework: DEBUG
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
-
-jwt:
-  expiration: 86400000   # JWT 만료 시간 (밀리초 단위)
-  secret: "asjdflqouasbkjkASDLKJjsdaflkbJKjfaskldnLJKBljb"  # JWT 비밀 키
