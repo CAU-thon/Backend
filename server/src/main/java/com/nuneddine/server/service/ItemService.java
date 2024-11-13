@@ -132,9 +132,6 @@ public class ItemService {
     @Transactional
     public void addItemIntoSnowman(Snowman snowman, SnowmanItemRequest request) {
         SnowmanItem newSnowManItem = SnowmanItem.builder()
-                .posX(request.getPosX())
-                .posY(request.getPosY())
-                .posZ(request.getPosZ())
                 .item(itemRepository.getItemById(request.getId()))
                 .build();
         snowmanItemRepository.save(newSnowManItem);
@@ -151,10 +148,6 @@ public class ItemService {
     public SnowmanItem updateSnowmanItem(SnowmanItemRequest request) {
         SnowmanItem snowmanItem = snowmanItemRepository.findByItem(itemRepository.getItemById(request.getId()))
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 아이템이 없습니다."));
-
-        snowmanItem.setPosX(request.getPosX());
-        snowmanItem.setPosY(request.getPosY());
-        snowmanItem.setPosZ(request.getPosZ());
 
         snowmanItemRepository.save(snowmanItem);
         return snowmanItem;
