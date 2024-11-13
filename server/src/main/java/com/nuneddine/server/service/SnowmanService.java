@@ -4,10 +4,7 @@ import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
-import com.nuneddine.server.dto.response.SnowmanAllDetailResponseDto;
-import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
-import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
-import com.nuneddine.server.dto.response.SnowmanResponseDto;
+import com.nuneddine.server.dto.response.*;
 import com.nuneddine.server.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,18 +119,23 @@ public class SnowmanService {
         Snowman snowman = snowmanRepository.findById(snowmanId)
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
-        List<SnowmanItem> snowmanItems = snowmanItemRepository.findBySnowman(snowman);
+        List<SnowmanItemResponseDto> snowmanItems = snowmanItemRepository.findBySnowman(snowman)
+                .stream()
+                .map(item -> new SnowmanItemResponseDto(item.getId(), item.getPosX(), item.getPosY(), item.getPosZ()))
+                .collect(Collectors.toList());
+        Member member = snowman.getMember();
 
-        SnowmanAllDetailResponseDto responseDto = new SnowmanAllDetailResponseDto(
+        SnowmanAllDetailResponseDto snowmanAllDetailResponseDto = new SnowmanAllDetailResponseDto(
                 snowmanId, snowman.getName(), snowman.getColor(), snowman.getSnowmanShape(),
-                snowman.getImage(), snowman.getMapNumber(), snowman.getPosX(), snowman.getPosY(),
-                snowman.getMember(),
+                null, snowman.getMapNumber(), snowman.getPosX(), snowman.getPosY(),
+                member.getId(),
                 snowmanItems,
                 snowman.getQuiz(), snowman.getAnswerId(),
-                choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent()
+                choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
+                snowman.getCreatedAt(), snowman.getUpdatedAt()
         );
 
-        return responseDto;
+        return snowmanAllDetailResponseDto;
     }
 
     @Transactional

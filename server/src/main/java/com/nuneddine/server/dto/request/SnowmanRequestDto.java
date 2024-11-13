@@ -1,6 +1,8 @@
 package com.nuneddine.server.dto.request;
 
 import com.nuneddine.server.domain.SnowmanShape;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

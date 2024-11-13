@@ -68,6 +68,7 @@ public class SnowmanController {
         }
     }
 
+    // 눈사람 모든 정보 보기
     @GetMapping("/snowman/detail/{snowmanId}")
     public ResponseEntity<SnowmanAllDetailResponseDto> allDailSnowman(@PathVariable(value = "snowmanId") Long snowmanId) {
         SnowmanAllDetailResponseDto responseDto = snowmanService.allDetailSnowman(snowmanId);
