@@ -45,7 +45,7 @@ public class ItemController {
     }
 
     @Operation(summary = "아이템 가챠 api", description = "보유하지 않은 아이템 중 랜덤으로 아이템을 해금")
-    @GetMapping("/gacha")
+    @GetMapping("/gotcha")
     public ResponseEntity<Item> gachaItem(@RequestHeader("Authorization") String header) {
         Member member = getMember(header);
         Item item = itemService.gachaItem(member);
