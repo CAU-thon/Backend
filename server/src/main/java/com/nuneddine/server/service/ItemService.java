@@ -1,5 +1,8 @@
 package com.nuneddine.server.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
 import com.nuneddine.server.dto.response.MemberItemResponse;
@@ -9,8 +12,11 @@ import com.nuneddine.server.repository.SnowmanItemRepository;
 import com.nuneddine.server.repository.SnowmanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +31,50 @@ public class ItemService {
     private MemberItemRepository memberItemRepository;
     @Autowired
     private SnowmanItemRepository snowmanItemRepository;
+
+    // 기본제공 아이템 리스트
+    private List<Item> defaultItems;
+
+    // file path에서 json 가져오기
+    public ItemService(@Value("item.file.path=file:/Users/kwonminhyeok/Desktop/LIKELION_CAU/cauthon/Backend/server/src/main/resources/defaultItems.json") String filePath) {
+        this.itemRepository = itemRepository;
+        loadDefaultItems(filePath);
+    }
+
+    private void loadDefaultItems(String filePath) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Item> items = new ArrayList<>();
+        try {
+            JsonNode rootNode = objectMapper.readTree(new File(filePath));
+            JsonNode itemsNode = rootNode.get("items");
+
+            if (itemsNode != null && itemsNode.isArray()) {
+                for (JsonNode itemNode : itemsNode) {
+                    Long id = itemNode.get("id").asLong();
+                    Item item = itemRepository.findById(id).orElse(null);
+                    if (item != null) {
+                        items.add(item);
+                    }
+                }
+            }
+            defaultItems = items;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // defaultItems getter
+    @Transactional
+    public List<Item> getDefaultItems() {
+        return defaultItems;
+    }
+
+    @Transactional
+    public void setDefaultItems(Member member, List<Item> defaultItems) {
+        for(Item item : defaultItems) {
+            addItemIntoMember(member, item);
+        }
+    }
 
     // 아이템 가챠(모든 아이템 기준)
     @Transactional
