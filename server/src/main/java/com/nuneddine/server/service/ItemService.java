@@ -1,5 +1,8 @@
 package com.nuneddine.server.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
 import com.nuneddine.server.dto.response.MemberItemResponse;
@@ -9,8 +12,12 @@ import com.nuneddine.server.repository.SnowmanItemRepository;
 import com.nuneddine.server.repository.SnowmanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +32,44 @@ public class ItemService {
     private MemberItemRepository memberItemRepository;
     @Autowired
     private SnowmanItemRepository snowmanItemRepository;
+
+    @Value("${json.file.path}")
+    private String filePath;
+
+    // 기본제공 아이템 리스트
+    private List<Item> defaultItems;
+
+    private void loadDefaultItems(String filePath) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Item> items = new ArrayList<>();
+        try {
+            JsonNode rootNode = objectMapper.readTree(new File(filePath));
+            JsonNode itemsNode = rootNode.get("items");
+
+            if (itemsNode != null && itemsNode.isArray()) {
+                for (JsonNode itemNode : itemsNode) {
+                    Long id = itemNode.get("id").asLong();
+                    Item item = itemRepository.findById(id).orElse(null);
+                    if (item != null) {
+                        items.add(item);
+                    }
+                }
+            }
+            defaultItems = items;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public void setDefaultItems(Member member) {
+        if (defaultItems == null) {
+            loadDefaultItems(filePath);
+        }
+        for(Item item : defaultItems) {
+            addItemIntoMember(member, item);
+        }
+    }
 
     // 아이템 가챠(모든 아이템 기준)
     @Transactional
@@ -52,7 +97,7 @@ public class ItemService {
 
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
     @Transactional
-    private List<Item> getItemsByMember(Member member) {
+    public List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
