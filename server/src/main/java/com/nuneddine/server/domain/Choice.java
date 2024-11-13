@@ -31,4 +31,8 @@ public class Choice {
         this.content = content;
         this.count = count;
     }
+
+    public void countUp() {
+        this.count = this.count + 1;
+    }
 }
