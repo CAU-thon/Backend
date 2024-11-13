@@ -13,6 +13,7 @@ import com.nuneddine.server.repository.SnowmanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -32,14 +33,11 @@ public class ItemService {
     @Autowired
     private SnowmanItemRepository snowmanItemRepository;
 
+    @Value("${json.file.path}")
+    private String filePath;
+
     // 기본제공 아이템 리스트
     private List<Item> defaultItems;
-
-    // file path에서 json 가져오기
-    public ItemService(@Value("item.file.path=file:/Users/kwonminhyeok/Desktop/LIKELION_CAU/cauthon/Backend/server/src/main/resources/defaultItems.json") String filePath) {
-        this.itemRepository = itemRepository;
-        loadDefaultItems(filePath);
-    }
 
     private void loadDefaultItems(String filePath) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -63,14 +61,11 @@ public class ItemService {
         }
     }
 
-    // defaultItems getter
     @Transactional
-    public List<Item> getDefaultItems() {
-        return defaultItems;
-    }
-
-    @Transactional
-    public void setDefaultItems(Member member, List<Item> defaultItems) {
+    public void setDefaultItems(Member member) {
+        if (defaultItems == null) {
+            loadDefaultItems(filePath);
+        }
         for(Item item : defaultItems) {
             addItemIntoMember(member, item);
         }
@@ -103,7 +98,7 @@ public class ItemService {
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
     // 이때, 만약 커스텀 아이템 (imgUrl != null)인 경우에는 포함하면 안됨!
     @Transactional
-    private List<Item> getItemsByMember(Member member) {
+    public List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
