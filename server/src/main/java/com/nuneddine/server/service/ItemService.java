@@ -96,11 +96,13 @@ public class ItemService {
     }
 
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
+    // 이때, 만약 커스텀 아이템 (imgUrl != null)인 경우에는 포함하면 안됨!
     @Transactional
     public List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
+                .filter(item -> item.getImgUrl() == null)
                 .collect(Collectors.toList());
     }
 
@@ -125,9 +127,6 @@ public class ItemService {
     @Transactional
     public void addItemIntoSnowman(Snowman snowman, SnowmanItemRequest request) {
         SnowmanItem newSnowManItem = SnowmanItem.builder()
-                .posX(request.getPosX())
-                .posY(request.getPosY())
-                .posZ(request.getPosZ())
                 .item(itemRepository.getItemById(request.getId()))
                 .build();
         snowmanItemRepository.save(newSnowManItem);
@@ -144,10 +143,6 @@ public class ItemService {
     public SnowmanItem updateSnowmanItem(SnowmanItemRequest request) {
         SnowmanItem snowmanItem = snowmanItemRepository.findByItem(itemRepository.getItemById(request.getId()))
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 아이템이 없습니다."));
-
-        snowmanItem.setPosX(request.getPosX());
-        snowmanItem.setPosY(request.getPosY());
-        snowmanItem.setPosZ(request.getPosZ());
 
         snowmanItemRepository.save(snowmanItem);
         return snowmanItem;

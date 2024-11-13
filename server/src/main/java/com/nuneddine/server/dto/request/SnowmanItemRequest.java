@@ -7,7 +7,4 @@ import lombok.Setter;
 @Setter
 public class SnowmanItemRequest {
     private Long id;
-    private double posX;
-    private double posY;
-    private double posZ;
 }
