@@ -16,8 +16,6 @@ public class SnowmanRequestDto {
     private String color;
     private SnowmanShape snowmanShape;
     private String image;
-    private double posX;
-    private double posY;
     private List<SnowmanItemRequest> snowmanItemRequests;
 
     private String quiz;

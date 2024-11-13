@@ -8,6 +8,4 @@ import lombok.Getter;
 public class SnowmanResponseDto {
     private Long id;
     private String image;
-    private double posX;
-    private double posY;
 }
