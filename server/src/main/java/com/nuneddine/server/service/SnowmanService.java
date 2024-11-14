@@ -44,8 +44,6 @@ public class SnowmanService {
     public Long createSnowman(SnowmanRequestDto snowmanRequestDto, int mapNumber, Member member) {
         Snowman snowman = Snowman.builder()
                 .name(snowmanRequestDto.getName())
-                .color(snowmanRequestDto.getColor())
-                .snowmanShape(snowmanRequestDto.getSnowmanShape())
                 .image(snowmanRequestDto.getImage())
                 .mapNumber(mapNumber)
                 .posX(snowmanRequestDto.getPosX())
@@ -56,13 +54,15 @@ public class SnowmanService {
                 .build();
         snowmanRepository.save(snowman);
 
-        List<SnowmanItem> snowmanItems = snowmanRequestDto.getSnowmanItemRequests()
-                .stream()
-                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId()), item.getPosX(), item.getPosY(), item.getPosZ()))
-                .collect(Collectors.toList());
-        for (SnowmanItem snowmanItem : snowmanItems) {
-            snowmanItemRepository.save(snowmanItem);
-        }
+//        List<Long> itemIds = snowmanRequestDto.getItemIds();
+//
+//        for (Long itemId : itemIds) {
+//            SnowmanItem snowmanItem = SnowmanItem.builder()
+//                    .snowman(snowman)
+//                    .item(itemRepository.getItemById(itemId))
+//                    .build();
+//            snowmanItemRepository.save(snowmanItem);
+//        }
 
         Choice choice1 = Choice.builder()
                 .snowman(snowman)
@@ -121,15 +121,15 @@ public class SnowmanService {
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
         List<SnowmanItemResponseDto> snowmanItems = snowmanItemRepository.findBySnowman(snowman)
                 .stream()
-                .map(item -> new SnowmanItemResponseDto(item.getId(), item.getPosX(), item.getPosY(), item.getPosZ()))
+                .map(item -> new SnowmanItemResponseDto(item.getId()))
                 .collect(Collectors.toList());
         Member member = snowman.getMember();
 
         SnowmanAllDetailResponseDto snowmanAllDetailResponseDto = new SnowmanAllDetailResponseDto(
-                snowmanId, snowman.getName(), snowman.getColor(), snowman.getSnowmanShape(),
-                null, snowman.getMapNumber(), snowman.getPosX(), snowman.getPosY(),
+                snowmanId, snowman.getName(),
+                snowman.getImage(), snowman.getMapNumber(),
+                snowman.getPosX(), snowman.getPosY(),
                 member.getId(),
-                snowmanItems,
                 snowman.getQuiz(), snowman.getAnswerId(),
                 choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
                 snowman.getCreatedAt(), snowman.getUpdatedAt()
@@ -158,7 +158,7 @@ public class SnowmanService {
 
         List<SnowmanItem> afterItems = requestDto.getSnowmanItemRequests()
                 .stream()
-                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId()), item.getPosX(), item.getPosY(), item.getPosZ()))
+                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId())))
                 .collect(Collectors.toList());
         for (SnowmanItem snowmanItem : afterItems) {
             snowmanItemRepository.save(snowmanItem);
