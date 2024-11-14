@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -43,7 +45,14 @@ public class ItemService {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Item> items = new ArrayList<>();
         try {
-            JsonNode rootNode = objectMapper.readTree(new File(filePath));
+//            JsonNode rootNode = objectMapper.readTree(new File(filePath));
+//            JsonNode itemsNode = rootNode.get("items");
+
+            // 파일 내용을 String으로 읽기
+            String jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+
+            // String에서 JsonNode를 생성하기
+            JsonNode rootNode = objectMapper.readTree(jsonContent);
             JsonNode itemsNode = rootNode.get("items");
 
             if (itemsNode != null && itemsNode.isArray()) {
