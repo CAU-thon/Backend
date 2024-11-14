@@ -33,8 +33,8 @@ public class Snowman extends BaseTimeEntity {
     @Builder
     Snowman(String name, String color, SnowmanShape snowmanShape, String image, int mapNumber, double posX, double posY, String quiz, Long answerId, Member member) {
         this.name = name;
-        this.color = color;
-        this.snowmanShape = snowmanShape;
+//        this.color = color;
+//        this.snowmanShape = snowmanShape;
         this.image = image;
         this.mapNumber = mapNumber;
         this.posX = posX;

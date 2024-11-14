@@ -36,7 +36,7 @@ public class SnowmanService {
 
         // 눈사람의 id, 이미지, 위치를 반환
         return snowmans.stream()
-                .map(snowman -> new SnowmanResponseDto(snowman.getId(), snowman.getImage()))
+                .map(snowman -> new SnowmanResponseDto(snowman.getId(), snowman.getImage(), snowman.getPosX(), snowman.getPosY()))
                 .collect(Collectors.toList());
     }
 
@@ -44,23 +44,25 @@ public class SnowmanService {
     public Long createSnowman(SnowmanRequestDto snowmanRequestDto, int mapNumber, Member member) {
         Snowman snowman = Snowman.builder()
                 .name(snowmanRequestDto.getName())
-                .color(snowmanRequestDto.getColor())
-                .snowmanShape(snowmanRequestDto.getSnowmanShape())
                 .image(snowmanRequestDto.getImage())
                 .mapNumber(mapNumber)
+                .posX(snowmanRequestDto.getPosX())
+                .posY(snowmanRequestDto.getPosY())
                 .quiz(snowmanRequestDto.getQuiz())
                 .answerId(snowmanRequestDto.getAnswerId())
                 .member(member)
                 .build();
         snowmanRepository.save(snowman);
 
-        List<SnowmanItem> snowmanItems = snowmanRequestDto.getSnowmanItemRequests()
-                .stream()
-                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId())))
-                .collect(Collectors.toList());
-        for (SnowmanItem snowmanItem : snowmanItems) {
-            snowmanItemRepository.save(snowmanItem);
-        }
+//        List<Long> itemIds = snowmanRequestDto.getItemIds();
+//
+//        for (Long itemId : itemIds) {
+//            SnowmanItem snowmanItem = SnowmanItem.builder()
+//                    .snowman(snowman)
+//                    .item(itemRepository.getItemById(itemId))
+//                    .build();
+//            snowmanItemRepository.save(snowmanItem);
+//        }
 
         Choice choice1 = Choice.builder()
                 .snowman(snowman)
@@ -124,10 +126,10 @@ public class SnowmanService {
         Member member = snowman.getMember();
 
         SnowmanAllDetailResponseDto snowmanAllDetailResponseDto = new SnowmanAllDetailResponseDto(
-                snowmanId, snowman.getName(), snowman.getColor(), snowman.getSnowmanShape(),
+                snowmanId, snowman.getName(),
                 snowman.getImage(), snowman.getMapNumber(),
+                snowman.getPosX(), snowman.getPosY(),
                 member.getId(),
-                snowmanItems,
                 snowman.getQuiz(), snowman.getAnswerId(),
                 choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
                 snowman.getCreatedAt(), snowman.getUpdatedAt()
