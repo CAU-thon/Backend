@@ -47,4 +47,4 @@ logging:
 
 json:
   file:
-    path: src/main/resources/defaultItems.json
+    path: classpath:defaultItems.json
