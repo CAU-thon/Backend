@@ -174,12 +174,19 @@ public class SnowmanService {
     }
 
     @Transactional
-    public SnowmanQuizResponseDto findSnowmanQuiz(Long snowmanId) {
+    public SnowmanQuizResponseDto findSnowmanQuiz(Long snowmanId, Member member) {
         Snowman snowman = snowmanRepository.findById(snowmanId)
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
 
-        return new SnowmanQuizResponseDto(snowman.getId(), snowman.getName(), snowman.getImage(), snowman.getQuiz(), snowman.getAnswerId(), choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent());
+        // 해당 멤버가 이미 푼 문제인지
+        boolean isSolved = memberSnowmanRepository.findByMemberAndSnowman(member, snowman).isPresent();
+
+        return new SnowmanQuizResponseDto(snowman.getId(),
+                snowman.getName(), snowman.getImage(),
+                snowman.getQuiz(), snowman.getAnswerId(),
+                choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
+                member.getUsername(), isSolved);
     }
 
     @Transactional

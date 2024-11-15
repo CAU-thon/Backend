@@ -100,8 +100,12 @@ public class SnowmanController {
 
     // 눈사람 퀴즈 보기
     @GetMapping("/snowman/{snowmanId}")
-    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId) {
-        SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId);
+    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId, @RequestHeader("Authorization") String header) {
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberById(memberId);
+
+        SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId, member);
         return ResponseEntity.ok(snowmanQuizResponseDto);
     }
 
