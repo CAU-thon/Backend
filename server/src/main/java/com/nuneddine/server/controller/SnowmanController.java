@@ -9,6 +9,8 @@ import com.nuneddine.server.dto.response.SnowmanAllDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanDetailResponseDto;
 import com.nuneddine.server.dto.response.SnowmanQuizResponseDto;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
+import com.nuneddine.server.exception.CustomException;
+import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.service.JwtService;
 import com.nuneddine.server.service.MemberService;
 import com.nuneddine.server.service.SnowmanService;
@@ -29,6 +31,8 @@ public class SnowmanController {
     @Autowired
     MemberService memberService;
 
+    private static final int MAX_SNOWMAN = 3;
+
     // 맵 눈사람 리스트업
     @GetMapping("/map/{mapNumber}")
     public ResponseEntity<List<SnowmanResponseDto>> getSnowmansByMapNumber(@PathVariable(value = "mapNumber") int mapNumber) {
@@ -47,8 +51,12 @@ public class SnowmanController {
         String token = header.substring(7);
         Long memberId = jwtService.getMemberIdFromToken(token);
         Member member = memberService.getMemberById(memberId);
+        if (member.getBuild() >= MAX_SNOWMAN) {
+            throw new CustomException(ErrorCode.USER_CREATED_ALL_SNOWMAN);
+        }
 
         Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
+        member.updateBuild();
         return new ResponseEntity<>(snowmanId, HttpStatus.CREATED);
     }
 
