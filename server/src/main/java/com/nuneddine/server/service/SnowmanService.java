@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,11 @@ public class SnowmanService {
 //                    .build();
 //            snowmanItemRepository.save(snowmanItem);
 //        }
+        MemberSnowman memberSnowman = MemberSnowman.builder()
+                .member(member)
+                .snowman(snowman)
+                .build();
+        memberSnowmanRepository.save(memberSnowman);
 
         Choice choice1 = Choice.builder()
                 .snowman(snowman)
