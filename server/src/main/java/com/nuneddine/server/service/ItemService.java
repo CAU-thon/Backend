@@ -35,11 +35,12 @@ public class ItemService {
     @Autowired
     private SnowmanItemRepository snowmanItemRepository;
 
-    //push 할 때는 이 파일 경로를 주석 처리
+    // local에서 사용할 filePath
+    // push 할 때는 이 파일 경로를 주석 처리
 //    @Value("${json.file.path}")
 //    private String filePath;
     
-    //ec2에서 사용할 filePath
+    // ec2에서 사용할 filePath
     private String filePath = System.getProperty("user.home") + "/Backend/server/src/main/resources/defaultItems.json";
 
     // 기본제공 아이템 리스트
