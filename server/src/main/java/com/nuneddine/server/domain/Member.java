@@ -45,7 +45,7 @@ public class Member extends BaseTimeEntity {
         this.username = username;
     }
 
-    public void updateBuild() {
+    public void addBuild() {
         this.build += 1;
     }
 }

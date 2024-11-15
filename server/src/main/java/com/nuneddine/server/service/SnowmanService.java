@@ -1,7 +1,6 @@
 package com.nuneddine.server.service;
 
 import com.nuneddine.server.domain.*;
-import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
 import com.nuneddine.server.dto.response.*;
@@ -11,13 +10,10 @@ import com.nuneddine.server.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,6 +88,8 @@ public class SnowmanService {
                 .count(0)
                 .build();
         choiceRepository.save(choice3);
+
+        member.addBuild();
 
         return snowman.getId();
     }

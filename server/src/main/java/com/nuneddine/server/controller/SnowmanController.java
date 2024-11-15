@@ -56,7 +56,6 @@ public class SnowmanController {
         }
 
         Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
-        member.updateBuild();
         return new ResponseEntity<>(snowmanId, HttpStatus.CREATED);
     }
 
