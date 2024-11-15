@@ -39,7 +39,6 @@ public class ItemService {
     // push 할 때는 이 파일 경로를 주석 처리
 //    @Value("${json.file.path}")
 //    private String filePath;
-    
     // ec2에서 사용할 filePath
     private String filePath = System.getProperty("user.home") + "/Backend/server/src/main/resources/defaultItems.json";
 
@@ -113,7 +112,6 @@ public class ItemService {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
-                .filter(item -> item.getImgUrl() == null)
                 .collect(Collectors.toList());
     }
 
