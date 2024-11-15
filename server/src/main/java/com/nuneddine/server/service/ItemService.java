@@ -35,8 +35,12 @@ public class ItemService {
     @Autowired
     private SnowmanItemRepository snowmanItemRepository;
 
-    @Value("${json.file.path}")
-    private String filePath;
+    //push 할 때는 이 파일 경로를 주석 처리
+//    @Value("${json.file.path}")
+//    private String filePath;
+    
+    //ec2에서 사용할 filePath
+    private String filePath = System.getProperty("user.home") + "/Backend/server/src/main/resources/defaultItems.json";
 
     // 기본제공 아이템 리스트
     private List<Item> defaultItems;
@@ -45,9 +49,6 @@ public class ItemService {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Item> items = new ArrayList<>();
         try {
-//            JsonNode rootNode = objectMapper.readTree(new File(filePath));
-//            JsonNode itemsNode = rootNode.get("items");
-
             // 파일 내용을 String으로 읽기
             String jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
 
