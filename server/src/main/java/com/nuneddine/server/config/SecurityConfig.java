@@ -31,13 +31,13 @@ public class SecurityConfig {
         http
                 .cors((SecurityConfig::corsAllow))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/v1/cors/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/cors/**").permitAll()
-                        .requestMatchers("/api/v1/oauth/kakao/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/v1/cors/**", "/api/v1/oauth/kakao/**").permitAll() // 여러 경로를 한 줄로 그룹화
+                        .requestMatchers(HttpMethod.POST, "/api/v1/cors/**").permitAll() // POST 요청 예외 경로
+                        .requestMatchers(HttpMethod.GET, "/api/v1/map/*").permitAll() // 정규식 경로
+                        .requestMatchers(HttpMethod.GET, "/api/v1/snowman/*").permitAll() // 정규식 경로
+                        .anyRequest().authenticated() // 나머지 요청 인증 필요
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
