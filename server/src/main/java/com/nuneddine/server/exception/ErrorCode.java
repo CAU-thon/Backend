@@ -13,6 +13,7 @@ public enum ErrorCode {
     AWS_S3_NOT_CONNECTED(HttpStatus.SERVICE_UNAVAILABLE, "AWS-002", "AWS S3 연결에 실패했습니다."),
     FAILED_TO_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "AWS-003", "파일 읽기 오류 혹은 잘못된 입력입니다."),
     FILE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "FILE-001", "업로드하려는 파일의 크기가 너무 큽니다."),
+    INVALID_BASE64_DATA(HttpStatus.BAD_REQUEST, "FILE-002", "base64 이미지를 디코딩 할 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
