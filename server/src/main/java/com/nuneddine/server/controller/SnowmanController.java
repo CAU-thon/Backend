@@ -1,7 +1,6 @@
 package com.nuneddine.server.controller;
 
 import com.nuneddine.server.domain.Member;
-import com.nuneddine.server.domain.MemberSnowman;
 import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
 import com.nuneddine.server.dto.request.SolveQuizRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
@@ -56,7 +55,7 @@ public class SnowmanController {
         }
 
         Long snowmanId = snowmanService.createSnowman(snowmanRequestDto, mapNumber, member);
-        member.updateBuild();
+        member.increaseBuild();
         return new ResponseEntity<>(snowmanId, HttpStatus.CREATED);
     }
 

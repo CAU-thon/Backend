@@ -45,7 +45,27 @@ public class Member extends BaseTimeEntity {
         this.username = username;
     }
 
-    public void updateBuild() {
+    public void increaseBuild() {
         this.build += 1;
+    }
+
+    public void decreaseBuild() {
+        this.build -= 1;
+    }
+
+    public void updateChance() {
+        this.chance = 3;
+    }
+
+    public void decreaseChance() {
+        this.chance -= 1;
+    }
+
+    public void increasePoint() {
+        this.point += 100;
+    }
+
+    public void decreasePoint() {
+        this.point -= 300;
     }
 }
