@@ -205,7 +205,7 @@ public class ItemService {
         List<MemberItemResponse> memberItemResponses = allItems.stream()
                 .map(item -> {
                     boolean isUnlocked = !memberItemIds.contains(item.getId());
-                    return new MemberItemResponse(isUnlocked, item.getId());
+                    return new MemberItemResponse(isUnlocked, item.getId(), item.getItemName());
                 })
                 .collect(Collectors.toList());
 

@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class MemberItemResponse {
     boolean isUnLock;
     Long itemId;
+    String itemName;
 }
