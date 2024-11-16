@@ -9,6 +9,7 @@ import com.nuneddine.server.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class FileUploadService {
     private String bucketName;
 
     // DTO에서 받은 base64 인코딩 된 값을 매개변수로 입력
+    @Transactional
     public String uploadImage(String base64Image) {
         byte[] decodedBytes;
         try {
