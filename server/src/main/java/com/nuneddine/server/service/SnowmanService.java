@@ -198,9 +198,9 @@ public class SnowmanService {
         }
 
         // 각 선지의 비율 계산
-        double countChoice1 = Double.valueOf(choices.get(1).getCount());
-        double countChoice2 = Double.valueOf(choices.get(2).getCount());
-        double countChoice3 = Double.valueOf(choices.get(3).getCount());
+        double countChoice1 = Double.valueOf(choices.get(0).getCount());
+        double countChoice2 = Double.valueOf(choices.get(1).getCount());
+        double countChoice3 = Double.valueOf(choices.get(2).getCount());
         int countAll = (int)(countChoice1 + countChoice2 + countChoice3);
 
 
