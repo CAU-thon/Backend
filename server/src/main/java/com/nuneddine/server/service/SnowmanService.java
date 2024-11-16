@@ -175,6 +175,22 @@ public class SnowmanService {
     }
 
     @Transactional
+    public Long deleteSnowman(Long snowmanId, Member member) {
+        Snowman snowman = snowmanRepository.findById(snowmanId)
+                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
+
+        // 해당 사용자가 만든 눈사람만 삭제 가능
+        if (snowman.getMember() != member) {
+            throw new RuntimeException("본인이 만든 눈사람이 아닙니다.");
+        }
+
+        // 눈사람 삭제
+        snowmanRepository.delete(snowman);
+        return snowmanId;
+    }
+
+
+    @Transactional
     public SnowmanQuizResponseDto findSnowmanQuiz(Long snowmanId, Member member) {
         Snowman snowman = snowmanRepository.findById(snowmanId)
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
