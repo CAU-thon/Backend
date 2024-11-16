@@ -29,6 +29,8 @@ public class SnowmanService {
     MemberSnowmanRepository memberSnowmanRepository;
     @Autowired
     SnowmanItemRepository snowmanItemRepository;
+    @Autowired
+    FileUploadService fileUploadService;
 
     @Transactional
     public List<SnowmanResponseDto> findSnowmansByMap(int mapNumber) {
@@ -42,9 +44,12 @@ public class SnowmanService {
 
     @Transactional
     public Long createSnowman(SnowmanRequestDto snowmanRequestDto, int mapNumber, Member member) {
+        String base64Img = snowmanRequestDto.getImage();
+        String imgUrl = fileUploadService.uploadImage(base64Img);
+
         Snowman snowman = Snowman.builder()
                 .name(snowmanRequestDto.getName())
-                .image(snowmanRequestDto.getImage())
+                .image(imgUrl)
                 .mapNumber(mapNumber)
                 .posX(snowmanRequestDto.getPosX())
                 .posY(snowmanRequestDto.getPosY())
