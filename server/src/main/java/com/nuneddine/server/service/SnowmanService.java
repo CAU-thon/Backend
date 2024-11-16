@@ -89,7 +89,7 @@ public class SnowmanService {
                 .build();
         choiceRepository.save(choice3);
 
-        member.addBuild();
+        member.increaseBuild();
 
         return snowman.getId();
     }
