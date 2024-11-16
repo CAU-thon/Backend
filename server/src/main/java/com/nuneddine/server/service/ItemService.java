@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
+import com.nuneddine.server.dto.response.GachaResponseDto;
 import com.nuneddine.server.dto.response.MemberItemResponse;
 import com.nuneddine.server.repository.ItemRepository;
 import com.nuneddine.server.repository.MemberItemRepository;
@@ -83,7 +84,19 @@ public class ItemService {
 
     // 아이템 가챠(모든 아이템 기준)
     @Transactional
-    public Item gachaItem(Member member) {
+    public GachaResponseDto gachaItem(Member member) {
+        if (canGacha(member)) {
+            // 가챠 가능
+            Item item = gacha(member);
+            return new GachaResponseDto(item, true);
+        }
+        else {
+            // 가챠 불가능
+            return new GachaResponseDto(null, false);
+        }
+    }
+
+    private Item gacha(Member member) {
         // 전체 아이템 풀
         List<Item> allItemPool = itemRepository.findAll();
 
@@ -105,8 +118,14 @@ public class ItemService {
         return null;
     }
 
+    // 가챠 가능 여부
+    private boolean canGacha(Member member) {
+        if ( member.getPoint() > 300 ) {
+            return true;
+        } else return false;
+    }
+
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
-    // 이때, 만약 커스텀 아이템 (imgUrl != null)인 경우에는 포함하면 안됨!
     @Transactional
     public List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
