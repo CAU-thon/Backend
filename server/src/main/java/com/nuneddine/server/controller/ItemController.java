@@ -6,6 +6,7 @@ import com.nuneddine.server.dto.response.MemberItemResponse;
 import com.nuneddine.server.repository.MemberRepository;
 import com.nuneddine.server.service.ItemService;
 import com.nuneddine.server.service.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ItemController {
         return member;
     }
 
+    @Operation(summary = "사용할 수 있는 아이템 조회 api", description = "멤버 별 해금되어 사용할 수 있는 아이템 목록을 반환")
     @GetMapping("/inventory")
     public ResponseEntity<List<MemberItemResponse>> getInventory(@RequestHeader("Authorization") String header) {
         Member member = getMember(header);
@@ -42,7 +44,8 @@ public class ItemController {
         return new ResponseEntity<>(itemService.getAllMemberItem(member), HttpStatus.OK);
     }
 
-    @GetMapping("/gacha")
+    @Operation(summary = "아이템 가챠 api", description = "보유하지 않은 아이템 중 랜덤으로 아이템을 해금")
+    @GetMapping("/gotcha")
     public ResponseEntity<Item> gachaItem(@RequestHeader("Authorization") String header) {
         Member member = getMember(header);
         Item item = itemService.gachaItem(member);

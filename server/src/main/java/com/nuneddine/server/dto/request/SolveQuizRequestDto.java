@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SnowmanItemRequest {
-    private Long id;
+public class SolveQuizRequestDto {
+    private Long number;
 }

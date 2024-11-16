@@ -1,5 +1,8 @@
 package com.nuneddine.server.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
 import com.nuneddine.server.dto.response.MemberItemResponse;
@@ -9,8 +12,14 @@ import com.nuneddine.server.repository.SnowmanItemRepository;
 import com.nuneddine.server.repository.SnowmanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +34,52 @@ public class ItemService {
     private MemberItemRepository memberItemRepository;
     @Autowired
     private SnowmanItemRepository snowmanItemRepository;
+
+    // local에서 사용할 filePath
+    // push 할 때는 이 파일 경로를 주석 처리
+//    @Value("${json.file.path}")
+//    private String filePath;
+    // ec2에서 사용할 filePath
+    private String filePath = System.getProperty("user.home") + "/Backend/server/src/main/resources/defaultItems.json";
+
+    // 기본제공 아이템 리스트
+    private List<Item> defaultItems;
+
+    private void loadDefaultItems(String filePath) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Item> items = new ArrayList<>();
+        try {
+            // 파일 내용을 String으로 읽기
+            String jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+
+            // String에서 JsonNode를 생성하기
+            JsonNode rootNode = objectMapper.readTree(jsonContent);
+            JsonNode itemsNode = rootNode.get("items");
+
+            if (itemsNode != null && itemsNode.isArray()) {
+                for (JsonNode itemNode : itemsNode) {
+                    Long id = itemNode.get("id").asLong();
+                    Item item = itemRepository.findById(id).orElse(null);
+                    if (item != null) {
+                        items.add(item);
+                    }
+                }
+            }
+            defaultItems = items;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public void setDefaultItems(Member member) {
+        if (defaultItems == null) {
+            loadDefaultItems(filePath);
+        }
+        for(Item item : defaultItems) {
+            addItemIntoMember(member, item);
+        }
+    }
 
     // 아이템 가챠(모든 아이템 기준)
     @Transactional
@@ -51,8 +106,9 @@ public class ItemService {
     }
 
     // Member가 가진 아이템을 List<MemberItem>로 받아서 List<Item>으로 반환
+    // 이때, 만약 커스텀 아이템 (imgUrl != null)인 경우에는 포함하면 안됨!
     @Transactional
-    private List<Item> getItemsByMember(Member member) {
+    public List<Item> getItemsByMember(Member member) {
         List<MemberItem> memberItems = memberItemRepository.findByMember(member);
         return memberItems.stream()
                 .map(MemberItem::getItem)
@@ -80,9 +136,6 @@ public class ItemService {
     @Transactional
     public void addItemIntoSnowman(Snowman snowman, SnowmanItemRequest request) {
         SnowmanItem newSnowManItem = SnowmanItem.builder()
-                .posX(request.getPosX())
-                .posY(request.getPosY())
-                .posZ(request.getPosZ())
                 .item(itemRepository.getItemById(request.getId()))
                 .build();
         snowmanItemRepository.save(newSnowManItem);
@@ -99,10 +152,6 @@ public class ItemService {
     public SnowmanItem updateSnowmanItem(SnowmanItemRequest request) {
         SnowmanItem snowmanItem = snowmanItemRepository.findByItem(itemRepository.getItemById(request.getId()))
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 아이템이 없습니다."));
-
-        snowmanItem.setPosX(request.getPosX());
-        snowmanItem.setPosY(request.getPosY());
-        snowmanItem.setPosZ(request.getPosZ());
 
         snowmanItemRepository.save(snowmanItem);
         return snowmanItem;

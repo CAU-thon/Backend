@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:SECRET.yml
   profiles:
-    active: dev
+    active: ec2
 
   jpa:
     show-sql: true
@@ -44,3 +44,7 @@ logging:
     org.springframework: DEBUG
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
+
+json:
+  file:
+    path: src/main/resources/defaultItems.json
