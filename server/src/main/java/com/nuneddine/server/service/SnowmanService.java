@@ -219,13 +219,16 @@ public class SnowmanService {
         double countChoice3 = Double.valueOf(choices.get(2).getCount());
         int countAll = (int)(countChoice1 + countChoice2 + countChoice3);
 
+        double ratioChoice1 = (countAll > 0) ? countChoice1 / countAll : 0.0;
+        double ratioChoice2 = (countAll > 0) ? countChoice2 / countAll : 0.0;
+        double ratioChoice3 = (countAll > 0) ? countChoice3 / countAll : 0.0;
 
         return new SnowmanQuizResponseDto(snowman.getId(),
                 snowman.getName(), snowman.getMember().getUsername(), snowman.getImage(),
                 snowman.getQuiz(), snowman.getAnswerId(),
                 choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
                 isSolved, myAnswerId,
-                countChoice1/countAll, countChoice2/countAll, countChoice3/countAll);
+                ratioChoice1, ratioChoice2, ratioChoice3);
     }
 
     @Transactional
