@@ -15,6 +15,7 @@ public enum ErrorCode {
     FAILED_TO_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "AWS-003", "파일 읽기 오류 혹은 잘못된 입력입니다."),
     FILE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "FILE-001", "업로드하려는 파일의 크기가 너무 큽니다."),
     ALREADY_SOLVED_QUIZ(HttpStatus.TOO_MANY_REQUESTS, "QUIZ-001", "이미 푼 퀴즈입니다."),
+    FAILED_TO_GACHA(HttpStatus.LOCKED,  "ITEM-001", "꽝입니다.")
     ;
 
     private final HttpStatus httpStatus;

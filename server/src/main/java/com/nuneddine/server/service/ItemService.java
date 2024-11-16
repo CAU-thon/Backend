@@ -7,6 +7,8 @@ import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
 import com.nuneddine.server.dto.response.GachaResponseDto;
 import com.nuneddine.server.dto.response.MemberItemResponse;
+import com.nuneddine.server.exception.CustomException;
+import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.repository.ItemRepository;
 import com.nuneddine.server.repository.MemberItemRepository;
 import com.nuneddine.server.repository.SnowmanItemRepository;
@@ -46,6 +48,7 @@ public class ItemService {
     // 기본제공 아이템 리스트
     private List<Item> defaultItems;
 
+    @Transactional
     private void loadDefaultItems(String filePath) {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Item> items = new ArrayList<>();
@@ -96,6 +99,7 @@ public class ItemService {
         }
     }
 
+    @Transactional
     private Item gacha(Member member) {
         // 전체 아이템 풀
         List<Item> allItemPool = itemRepository.findAll();
@@ -108,17 +112,27 @@ public class ItemService {
         // 가중치가 필요할까? 어차피 아이템에 등급이 없으니까 가챠 대상 아이템에 대해서는 완전 랜덤해도 되는거 아님?
         // ex. 과잠용 아이템 풀 따로 만들어서 안에서는 무차별하게
         if (!gachaItemPool.isEmpty()) {
+            // 꽝의 비율 설정
+            double failRate = 0.3; // 30% 꽝 확률
             Random random = new Random();
-            Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
-            addItemIntoMember(member, gachaItem);
-            return gachaItem;
-        }
 
+            if (!gachaItemPool.isEmpty()) {
+                // 랜덤 값으로 꽝을 결정
+                if (random.nextDouble() < failRate) {
+                    // 꽝 처리
+                    throw new CustomException(ErrorCode.FAILED_TO_GACHA);
+                }
+            }
+                Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
+                addItemIntoMember(member, gachaItem);
+                return gachaItem;
+        }
         // 뽑을 아이템이 없는 경우
         return null;
     }
 
     // 가챠 가능 여부
+    @Transactional
     private boolean canGacha(Member member) {
         if ( member.getPoint() > 300 ) {
             return true;
