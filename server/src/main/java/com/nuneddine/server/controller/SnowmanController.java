@@ -98,10 +98,26 @@ public class SnowmanController {
         return new ResponseEntity<>(Id, HttpStatus.CREATED);
     }
 
+    // 눈사람 삭제하기
+    @DeleteMapping("/my-snowman/{snowmanId}")
+    public ResponseEntity<Long> deleteSnowman(@RequestHeader("Authorization") String header, @PathVariable(value = "snowmanId") Long snowmanId) {
+        // 본인 눈사람만 삭제 가능
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberById(memberId);
+
+        Long Id = snowmanService.deleteSnowman(snowmanId, member);
+        return new ResponseEntity<>(Id, HttpStatus.OK);
+    }
+
     // 눈사람 퀴즈 보기
     @GetMapping("/snowman/{snowmanId}")
-    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId) {
-        SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId);
+    public ResponseEntity<SnowmanQuizResponseDto> getSnowmanQuiz(@PathVariable(value = "snowmanId") Long snowmanId, @RequestHeader("Authorization") String header) {
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberById(memberId);
+
+        SnowmanQuizResponseDto snowmanQuizResponseDto = snowmanService.findSnowmanQuiz(snowmanId, member);
         return ResponseEntity.ok(snowmanQuizResponseDto);
     }
 

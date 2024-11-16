@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +29,8 @@ public class SnowmanService {
     MemberSnowmanRepository memberSnowmanRepository;
     @Autowired
     SnowmanItemRepository snowmanItemRepository;
+    @Autowired
+    FileUploadService fileUploadService;
 
     @Transactional
     public List<SnowmanResponseDto> findSnowmansByMap(int mapNumber) {
@@ -41,9 +44,12 @@ public class SnowmanService {
 
     @Transactional
     public Long createSnowman(SnowmanRequestDto snowmanRequestDto, int mapNumber, Member member) {
+        String base64Img = snowmanRequestDto.getImage();
+        String imgUrl = fileUploadService.uploadImage(base64Img);
+
         Snowman snowman = Snowman.builder()
                 .name(snowmanRequestDto.getName())
-                .image(snowmanRequestDto.getImage())
+                .image(imgUrl)
                 .mapNumber(mapNumber)
                 .posX(snowmanRequestDto.getPosX())
                 .posY(snowmanRequestDto.getPosY())
@@ -174,12 +180,60 @@ public class SnowmanService {
     }
 
     @Transactional
-    public SnowmanQuizResponseDto findSnowmanQuiz(Long snowmanId) {
+    public Long deleteSnowman(Long snowmanId, Member member) {
+        Snowman snowman = snowmanRepository.findById(snowmanId)
+                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
+
+        // 해당 사용자가 만든 눈사람만 삭제 가능
+        if (!snowman.getMember().equals(member)) {
+            throw new RuntimeException("본인이 만든 눈사람이 아닙니다.");
+        }
+
+        // 눈사람 삭제
+        snowmanRepository.delete(snowman);
+        return snowmanId;
+    }
+
+
+    @Transactional
+    public SnowmanQuizResponseDto findSnowmanQuiz(Long snowmanId, Member member) {
         Snowman snowman = snowmanRepository.findById(snowmanId)
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
 
-        return new SnowmanQuizResponseDto(snowman.getId(), snowman.getName(), snowman.getImage(), snowman.getQuiz(), snowman.getAnswerId(), choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent());
+        // 해당 멤버가 이미 푼 문제인지
+        Optional<MemberSnowman> optional = memberSnowmanRepository.findByMemberAndSnowman(member, snowman);
+        boolean isSolved = false;
+        Long myAnswerId = 0L;
+        if (optional.isPresent()) {
+            // 이미 푼 문제라면
+            isSolved = true;
+            MemberSnowman memberSnowman = optional.get();
+            myAnswerId = memberSnowman.getMyChoice();
+        }
+
+        // 헤당 멤버가 만든 문제이면 문제 맞춘 걸로 반환
+        if (member.equals(snowman.getMember())) {
+            isSolved = true;
+            myAnswerId = snowman.getAnswerId();
+        }
+
+        // 각 선지의 비율 계산
+        double countChoice1 = Double.valueOf(choices.get(0).getCount());
+        double countChoice2 = Double.valueOf(choices.get(1).getCount());
+        double countChoice3 = Double.valueOf(choices.get(2).getCount());
+        int countAll = (int)(countChoice1 + countChoice2 + countChoice3);
+
+        double ratioChoice1 = (countAll > 0) ? countChoice1 / countAll : 0.0;
+        double ratioChoice2 = (countAll > 0) ? countChoice2 / countAll : 0.0;
+        double ratioChoice3 = (countAll > 0) ? countChoice3 / countAll : 0.0;
+
+        return new SnowmanQuizResponseDto(snowman.getId(),
+                snowman.getName(), snowman.getMember().getUsername(), snowman.getImage(),
+                snowman.getQuiz(), snowman.getAnswerId(),
+                choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
+                isSolved, myAnswerId,
+                ratioChoice1, ratioChoice2, ratioChoice3);
     }
 
     @Transactional
