@@ -2,6 +2,7 @@ package com.nuneddine.server.controller;
 
 import com.nuneddine.server.domain.Item;
 import com.nuneddine.server.domain.Member;
+import com.nuneddine.server.dto.response.GachaResponseDto;
 import com.nuneddine.server.dto.response.MemberItemResponse;
 import com.nuneddine.server.repository.MemberRepository;
 import com.nuneddine.server.service.ItemService;
@@ -46,15 +47,21 @@ public class ItemController {
 
     @Operation(summary = "아이템 가챠 api", description = "보유하지 않은 아이템 중 랜덤으로 아이템을 해금")
     @GetMapping("/gotcha")
-    public ResponseEntity<Item> gachaItem(@RequestHeader("Authorization") String header) {
+    public ResponseEntity<GachaResponseDto> gachaItem(@RequestHeader("Authorization") String header) {
         Member member = getMember(header);
-        Item item = itemService.gachaItem(member);
+        GachaResponseDto responseDto = itemService.gachaItem(member);
 
-        if(item == null) {
-            // 204 No Content
-            return ResponseEntity.noContent().build();
+        if(responseDto.getItem() == null ) {
+            if (responseDto.isGachable()) {
+                // 뽑기는 가능했는데 뽑은 아이템이 없음 == 뽑을 아이템 없음
+                // 204 No Content
+                return ResponseEntity.noContent().build();
+            } else {
+                // 412 Precondition Failed <- 사전 조건 실패 == 포인트 부족
+                return  ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(responseDto);
+            }
         }
         // 200 OK
-        return new ResponseEntity<>(item, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }
