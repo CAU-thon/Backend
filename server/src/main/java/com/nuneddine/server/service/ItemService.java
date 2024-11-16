@@ -13,6 +13,7 @@ import com.nuneddine.server.repository.MemberItemRepository;
 import com.nuneddine.server.repository.SnowmanItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
