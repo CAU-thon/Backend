@@ -1,6 +1,5 @@
 package com.nuneddine.server.repository;
 
-import com.nuneddine.server.domain.Item;
 import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.domain.MemberItem;
 import org.springframework.data.jpa.repository.JpaRepository;

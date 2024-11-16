@@ -1,13 +1,9 @@
 package com.nuneddine.server.dto.response;
 
-import com.nuneddine.server.domain.Member;
-import com.nuneddine.server.domain.SnowmanItem;
-import com.nuneddine.server.domain.SnowmanShape;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor

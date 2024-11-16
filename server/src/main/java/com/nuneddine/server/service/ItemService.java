@@ -1,6 +1,5 @@
 package com.nuneddine.server.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuneddine.server.domain.*;
@@ -12,14 +11,10 @@ import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.repository.ItemRepository;
 import com.nuneddine.server.repository.MemberItemRepository;
 import com.nuneddine.server.repository.SnowmanItemRepository;
-import com.nuneddine.server.repository.SnowmanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
