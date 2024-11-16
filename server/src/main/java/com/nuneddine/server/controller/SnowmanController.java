@@ -12,7 +12,7 @@ import com.nuneddine.server.exception.CustomException;
 import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.service.JwtService;
 import com.nuneddine.server.service.MemberService;
-//import com.nuneddine.server.service.SnowmanPlacementService;
+import com.nuneddine.server.service.SnowmanPlacementService;
 import com.nuneddine.server.service.SnowmanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,8 +32,8 @@ public class SnowmanController {
     MemberService memberService;
 
     private static final int MAX_SNOWMAN = 3;
-//    @Autowired
-//    private SnowmanPlacementService snowmanPlacementService;
+    @Autowired
+    private SnowmanPlacementService snowmanPlacementService;
 
     // 맵 눈사람 리스트업
     @GetMapping("/map/{mapNumber}")
@@ -132,13 +132,13 @@ public class SnowmanController {
         return ResponseEntity.ok(isAnswer);
     }
 
-//    @GetMapping("/placement/{mapNumber}")
-//    public ResponseEntity<List<SnowmanResponseDto>> placeSnowman(@PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header){
-//
-//        String token = header.substring(7);
-//        Long memberId = jwtService.getMemberIdFromToken(token);
-//        Member member = memberService.getMemberById(memberId);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(snowmanPlacementService.selectSnowman(mapNumber, member));
-//    }
+    @GetMapping("/placement/{mapNumber}")
+    public ResponseEntity<List<SnowmanResponseDto>> placeSnowman(@PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header){
+
+        String token = header.substring(7);
+        Long memberId = jwtService.getMemberIdFromToken(token);
+        Member member = memberService.getMemberById(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(snowmanPlacementService.selectSnowman(mapNumber, member));
+    }
 }
