@@ -1,7 +1,6 @@
 package com.nuneddine.server.controller;
 
 import com.nuneddine.server.config.jwt.JwtUtil;
-import com.nuneddine.server.domain.Item;
 import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.response.JwtResponseDto;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
