@@ -180,7 +180,7 @@ public class SnowmanService {
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
 
         // 해당 사용자가 만든 눈사람만 삭제 가능
-        if (snowman.getMember() != member) {
+        if (!snowman.getMember().equals(member)) {
             throw new RuntimeException("본인이 만든 눈사람이 아닙니다.");
         }
 
@@ -208,7 +208,7 @@ public class SnowmanService {
         }
 
         // 헤당 멤버가 만든 문제이면 문제 맞춘 걸로 반환
-        if (member == snowman.getMember()) {
+        if (member.equals(snowman.getMember())) {
             isSolved = true;
             myAnswerId = snowman.getAnswerId();
         }
