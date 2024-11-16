@@ -59,15 +59,6 @@ public class SnowmanService {
                 .build();
         snowmanRepository.save(snowman);
 
-//        List<Long> itemIds = snowmanRequestDto.getItemIds();
-//
-//        for (Long itemId : itemIds) {
-//            SnowmanItem snowmanItem = SnowmanItem.builder()
-//                    .snowman(snowman)
-//                    .item(itemRepository.getItemById(itemId))
-//                    .build();
-//            snowmanItemRepository.save(snowmanItem);
-//        }
         MemberSnowman memberSnowman = MemberSnowman.builder()
                 .member(member)
                 .snowman(snowman)
@@ -191,6 +182,7 @@ public class SnowmanService {
 
         // 눈사람 삭제
         snowmanRepository.delete(snowman);
+        member.decreaseBuild();
         return snowmanId;
     }
 
@@ -257,7 +249,9 @@ public class SnowmanService {
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
 
         choices.get(number.intValue()-1).countUp(); // 사용자가 고른 답안의 count 수를 1 올림
+        member.decreaseChance();
         if (Objects.equals(snowman.getAnswerId(), number)) { // 사용자가 고른 답이 정답이라면
+            member.increasePoint();
             return true;
         }
         else {

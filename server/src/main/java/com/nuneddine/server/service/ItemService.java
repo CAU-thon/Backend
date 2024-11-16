@@ -121,6 +121,7 @@ public class ItemService {
             }
                 Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
                 addItemIntoMember(member, gachaItem);
+                member.decreasePoint();
                 return gachaItem;
         }
         // 뽑을 아이템이 없는 경우
