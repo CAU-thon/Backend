@@ -1,16 +1,12 @@
 package com.nuneddine.server.controller;
 
-import com.nuneddine.server.exception.CustomException;
 import com.nuneddine.server.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +16,11 @@ public class S3TestController {
     private final FileUploadService fileUploadService;
 
     @PostMapping("")
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
-        String fileUrl = fileUploadService.uploadImage(file);
+    public ResponseEntity<?> uploadImage(@RequestBody String base64Image) {
+        if (base64Image == null || base64Image.isEmpty()) {
+            return ResponseEntity.badRequest().body("Base64 image data가 필요합니다.");
+        }
+        String fileUrl = fileUploadService.uploadImage(base64Image);
         return ResponseEntity.ok(fileUrl);
     }
 }
