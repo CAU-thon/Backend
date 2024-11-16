@@ -1,21 +1,19 @@
 package com.nuneddine.server.service;
 
 import com.nuneddine.server.domain.*;
-import com.nuneddine.server.dto.request.KakaoOAuthRequestDto;
 import com.nuneddine.server.dto.request.SnowmanRequestDto;
 import com.nuneddine.server.dto.request.SnowmanUpdateRequestDto;
 import com.nuneddine.server.dto.response.*;
+import com.nuneddine.server.exception.CustomException;
+import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,6 +88,8 @@ public class SnowmanService {
                 .count(0)
                 .build();
         choiceRepository.save(choice3);
+
+        member.addBuild();
 
         return snowman.getId();
     }
@@ -189,7 +189,7 @@ public class SnowmanService {
 
         // 해당 사용자가 이미 푼 퀴즈라면
         if (memberSnowmanRepository.findByMemberAndSnowman(member, snowman).isPresent()) {
-            throw new IllegalStateException("이미 퀴즈를 푼 기록이 있습니다.");
+            throw new CustomException(ErrorCode.ALREADY_SOLVED_QUIZ);
         }
 
         // 새로운 member snowman 추가
