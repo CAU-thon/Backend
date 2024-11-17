@@ -13,7 +13,7 @@ public class ResetFieldScheduler {
     private final MemberRepository memberRepository;
 
     //매일 자정에 실행 (초 분 시 일 월 요일)
-    @Scheduled(cron = "0 3 16 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void resetFields() {
         memberRepository.resetFieldsToDefault(3);
