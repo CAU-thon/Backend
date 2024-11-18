@@ -4,6 +4,9 @@ spring:
   profiles:
     active: ec2
 
+  main:
+    time-zone: Asia/Seoul
+
   jpa:
     show-sql: true
     hibernate:
