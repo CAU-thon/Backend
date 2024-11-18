@@ -133,12 +133,19 @@ public class SnowmanController {
     }
 
     @GetMapping("/placement/{mapNumber}")
-    public ResponseEntity<List<SnowmanResponseDto>> placeSnowman(@PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header){
+    public ResponseEntity<List<SnowmanResponseDto>> placeSnowman(@PathVariable(value = "mapNumber") int mapNumber, @PathVariable(value = "maxSnowmanNumber") int maxSnowman,@RequestHeader("Authorization") String header){
 
         String token = header.substring(7);
         Long memberId = jwtService.getMemberIdFromToken(token);
         Member member = memberService.getMemberById(memberId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(snowmanPlacementService.selectSnowman(mapNumber, member));
+        return ResponseEntity.status(HttpStatus.OK).body(snowmanPlacementService.selectSnowman(mapNumber, member,maxSnowman));
     }
+
+    @GetMapping("/placement/all/{mapNumber}")
+    public ResponseEntity<List<SnowmanResponseDto>> placeSnowman(@PathVariable(value = "mapNumber") int mapNumber, @RequestHeader("Authorization") String header){
+
+        return ResponseEntity.status(HttpStatus.OK).body(snowmanPlacementService.selectAll(mapNumber));
+    }
+
 }

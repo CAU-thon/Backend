@@ -116,7 +116,7 @@ public class ItemService {
                 // 랜덤 값으로 꽝을 결정
                 if (random.nextDouble() < failRate) {
                     // 꽝 처리
-                    throw new CustomException(ErrorCode.FAILED_TO_GACHA);
+                    return itemRepository.getItemById(1L);
                 }
             }
                 Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
