@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberItemResponse {
-    boolean isUnLock;
+    boolean available;
     Long itemId;
     String itemName;
 }
