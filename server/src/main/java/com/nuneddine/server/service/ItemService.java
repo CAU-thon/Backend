@@ -201,8 +201,8 @@ public class ItemService {
         // allItems를 순회하면서 없으면 isUnlock = true로 설정
         List<MemberItemResponse> memberItemResponses = allItems.stream()
                 .map(item -> {
-                    boolean isUnlocked = !memberItemIds.contains(item.getId());
-                    return new MemberItemResponse(isUnlocked, item.getId(), item.getItemName());
+                    boolean available = memberItemIds.contains(item.getId());
+                    return new MemberItemResponse(available, item.getId(), item.getItemName());
                 })
                 .collect(Collectors.toList());
 
