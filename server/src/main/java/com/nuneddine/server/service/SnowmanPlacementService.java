@@ -18,14 +18,13 @@ public class SnowmanPlacementService {
     private static final double MAX_X = 327.0;
     private static final double MIN_Y = 1.5;
     private static final double MAX_Y = 489.0;
-    private static final int SNOWMAN_MAX_NUM = 15;
     private static final int MAX_USER_SNOWMEN = 3;
 
     @Autowired
     private SnowmanRepository snowmanRepository;
 
     // 주어진 맵 번호와 그리드 수, 좌표 범위를 사용하여 각 그리드에서 하나의 눈사람을 선택하는 메소드
-    public List<SnowmanResponseDto> selectSnowman(int mapNumber, Member member) {
+    public List<SnowmanResponseDto> selectSnowman(int mapNumber, Member member, int SNOWMAN_MAX_NUM) {
 
         // 데이터베이스에서 주어진 맵 번호에 해당하는 모든 눈사람을 가져옴
         List<Snowman> allSnowmen = snowmanRepository.findByMapNumber(mapNumber);
@@ -74,16 +73,16 @@ public class SnowmanPlacementService {
             }
         }
 
-        // SNOWMAN_MAX_NUM 개의 눈사람을 보장하기 위해 부족할 경우 추가 선택
-//        while (selectedSnowmen.size() < SNOWMAN_MAX_NUM && selectedSnowmen.size() < allSnowmen.size()) {
-//            List<Snowman> unselectedSnowmen = new ArrayList<>(allSnowmen);
-//            unselectedSnowmen.removeAll(selectedSnowmen);
-//
-//            if (!unselectedSnowmen.isEmpty()) {
-//                Snowman additionalSnowman = unselectedSnowmen.get(random.nextInt(unselectedSnowmen.size()));
-//                selectedSnowmen.add(additionalSnowman);
-//            }
-//        }
+         // SNOWMAN_MAX_NUM 개의 눈사람을 보장하기 위해 부족할 경우 추가 선택
+        while (selectedSnowmen.size() < SNOWMAN_MAX_NUM && selectedSnowmen.size() < allSnowmen.size()) {
+            List<Snowman> unselectedSnowmen = new ArrayList<>(allSnowmen);
+            unselectedSnowmen.removeAll(selectedSnowmen);
+
+            if (!unselectedSnowmen.isEmpty()) {
+                Snowman additionalSnowman = unselectedSnowmen.get(random.nextInt(unselectedSnowmen.size()));
+                selectedSnowmen.add(additionalSnowman);
+            }
+        }
 
         // SnowmanResponseDto 리스트로 반환
         List<SnowmanResponseDto> response = new ArrayList<>();
@@ -91,6 +90,16 @@ public class SnowmanPlacementService {
             response.add(new SnowmanResponseDto(snowman.getId(), snowman.getImage(), snowman.getPosX(), snowman.getPosY()));
         }
 
+        return response;
+    }
+
+    public List<SnowmanResponseDto> selectAll(int mapNumber) {
+        List<Snowman> snowmans = snowmanRepository.findByMapNumber(mapNumber);
+
+        List<SnowmanResponseDto> response = new ArrayList<>();
+        for (Snowman snowman : snowmans) {
+            response.add(new SnowmanResponseDto(snowman.getId(), snowman.getImage(), snowman.getPosX(), snowman.getPosY()));
+        }
         return response;
     }
 }
