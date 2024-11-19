@@ -21,7 +21,7 @@ public class MemberItem {
     @JoinColumn(name = "memberId", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "itemId", nullable = false)
     private Item item;
 
