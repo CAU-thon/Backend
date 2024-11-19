@@ -24,7 +24,7 @@ public class Snowman extends BaseTimeEntity {
     private String quiz; // 눈사람 문제 내용
     private Long answerId; // 눈사람 문제 답
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "memberId")
     private Member member; // 해당 눈사람을 만든 사용자
 
