@@ -116,13 +116,14 @@ public class ItemService {
                 // 랜덤 값으로 꽝을 결정
                 if (random.nextDouble() < failRate) {
                     // 꽝 처리
+                    member.decreasePoint();
                     return itemRepository.getItemById(1L);
                 }
             }
-                Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
-                addItemIntoMember(member, gachaItem);
-                member.decreasePoint();
-                return gachaItem;
+            Item gachaItem = gachaItemPool.get(random.nextInt(gachaItemPool.size()));
+            addItemIntoMember(member, gachaItem);
+            member.decreasePoint();
+            return gachaItem;
         }
         // 뽑을 아이템이 없는 경우
         return null;
