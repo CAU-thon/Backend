@@ -15,6 +15,4 @@ public class MemberInfoResponseDto {
     private int chance;
     private int point;
     private String image;
-
-
 }
