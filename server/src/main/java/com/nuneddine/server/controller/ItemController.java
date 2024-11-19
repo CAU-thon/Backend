@@ -8,6 +8,7 @@ import com.nuneddine.server.repository.MemberRepository;
 import com.nuneddine.server.service.ItemService;
 import com.nuneddine.server.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/item")
 public class ItemController {
 
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private ItemService itemService;
+    private final MemberRepository memberRepository;
+    private final JwtService jwtService;
+    private final ItemService itemService;
 
     private Member getMember(String header) {
         String token = header.substring(7);

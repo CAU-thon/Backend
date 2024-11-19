@@ -8,7 +8,7 @@ public enum ItemCategory {
     MOUTH("Mouth"),
     HAT("Hat"),
     MUFFLER("Muffler"),
-    COAT("Coat"),
+    OUTER("Outer"),
     SHIRT("Shirt"); // custom은 여기에
 
     private final String label;
