@@ -149,7 +149,7 @@ public class ItemService {
                 .item(item)
                 .member(member)
                 .build();
-        memberItemRepository.save(newMemberItem);
+        memberItemRepository.saveAndFlush(newMemberItem);
     }
 
     // mypage에서 본인의 아이템 인벤토리 확인
