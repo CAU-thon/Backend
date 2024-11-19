@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/oauth/kakao")
 public class KakaoController {
 
-    private KakaoOAuthService kakaoOAuthService;
-    private MemberService memberService;
-    private ItemService itemService;
-    private JwtUtil jwtUtil;
+    private final KakaoOAuthService kakaoOAuthService;
+    private final MemberService memberService;
+    private final ItemService itemService;
+    private final JwtUtil jwtUtil;
 
     @Operation(summary = "jwt 토큰 발급 api", description = "인가 코드를 사용하여 카카오 사용자 조회 및 jwt 토큰 반환")
     @PostMapping("/token")
