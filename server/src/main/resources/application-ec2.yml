@@ -1,0 +1,11 @@
+spring:
+  include: "classpath:SECRET.yml"
+  config:
+    activate:
+      on-profile: ec2
+
+  datasource:
+    url: jdbc:mysql://${database.host.ec2}/${database.name}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${database.username}
+    password: ${database.password}

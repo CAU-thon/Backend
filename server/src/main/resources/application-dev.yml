@@ -1,0 +1,11 @@
+spring:
+  config:
+    include: "classpath:SECRET.yml"
+    activate:
+      on-profile: dev
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${database.host.dev}/${database.name}
+    username: ${database.username}
+    password: ${database.password}

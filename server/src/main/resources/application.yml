@@ -1,0 +1,53 @@
+spring:
+  config:
+    import: classpath:SECRET.yml
+  profiles:
+    active: ec2
+
+  main:
+    time-zone: Asia/Seoul
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update # Hibernate의 DDL 자동 생성 전략 (update, create, create-drop 등)
+    properties:
+      hibernate:
+        format_sql: true # 실제 db 어떻게 sql 나가는지 확인
+        dialect: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      mode: always # 애플리케이션 시작 시 스크립트 초기화 (기본값: embedded)
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${kakao.client.id}
+            client-secret: ${kakao.client.server}
+            authorization-grant-type: authorization_code
+            client_name: "Kakao"
+            redirect-uri: ${kakao.redirect-uri}
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+
+json:
+  file:
+    path: src/main/resources/defaultItems.json
