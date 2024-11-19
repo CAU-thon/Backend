@@ -14,10 +14,10 @@ import java.util.Random;
 @Service
 public class SnowmanPlacementService {
 
-    private static final double MIN_X = -18.0;
-    private static final double MAX_X = 327.0;
-    private static final double MIN_Y = 1.5;
-    private static final double MAX_Y = 489.0;
+    private static final double MIN_X = 0;
+    private static final double MAX_X = 100;
+    private static final double MIN_Y = 0;
+    private static final double MAX_Y = 100;
     private static final int MAX_USER_SNOWMEN = 3;
 
     @Autowired
