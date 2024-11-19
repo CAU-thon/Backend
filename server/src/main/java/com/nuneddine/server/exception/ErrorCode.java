@@ -16,7 +16,6 @@ public enum ErrorCode {
     FILE_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "FILE-001", "업로드하려는 파일의 크기가 너무 큽니다."),
     INVALID_BASE64_DATA(HttpStatus.BAD_REQUEST, "FILE-002", "base64 이미지를 디코딩 할 수 없습니다."),
     ALREADY_SOLVED_QUIZ(HttpStatus.TOO_MANY_REQUESTS, "QUIZ-001", "이미 푼 퀴즈입니다."),
-    FAILED_TO_GACHA(HttpStatus.LOCKED,  "ITEM-001", "꽝입니다.")
     ;
 
     private final HttpStatus httpStatus;
