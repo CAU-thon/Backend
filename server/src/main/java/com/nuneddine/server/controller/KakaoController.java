@@ -35,13 +35,19 @@ public class KakaoController {
         //accessToken -> 사용자 정보 받아오기
         KakaoUser kakaoUser = kakaoOAuthService.fetchKakaoUserInfo(accessToken);
         Member member = memberService.getMemberByKakaoId(kakaoUser.getId());
-        if (itemService.getItemsByMember(member).isEmpty()) {
-            itemService.setDefaultItems(member);
-        }
 
         //받아온 Member -> jwt 만들어서 반환
         String token = jwtUtil.generateToken(member.getId());
-        JwtResponseDto response = new JwtResponseDto(token);
+
+        JwtResponseDto response;
+
+        //첫 로그인인 경우 기본 아이템 추가
+        if (itemService.getItemsByMember(member).isEmpty()) {
+            response = new JwtResponseDto(token, true);
+            itemService.setDefaultItems(member);
+        } else {
+            response = new JwtResponseDto(token, false);
+        }
 
         return ResponseEntity.ok(response);
     }

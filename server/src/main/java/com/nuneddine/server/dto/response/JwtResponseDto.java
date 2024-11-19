@@ -7,4 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class JwtResponseDto {
     private String token;
+    private boolean firstLogin;
 }
