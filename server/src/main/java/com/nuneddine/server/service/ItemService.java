@@ -6,12 +6,11 @@ import com.nuneddine.server.domain.*;
 import com.nuneddine.server.dto.request.SnowmanItemRequest;
 import com.nuneddine.server.dto.response.GachaResponseDto;
 import com.nuneddine.server.dto.response.MemberItemResponse;
-import com.nuneddine.server.exception.CustomException;
-import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.repository.ItemRepository;
 import com.nuneddine.server.repository.MemberItemRepository;
-import com.nuneddine.server.repository.SnowmanItemRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,13 +25,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemService {
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private MemberItemRepository memberItemRepository;
-    @Autowired
-    private SnowmanItemRepository snowmanItemRepository;
+    private final ItemRepository itemRepository;
+    private final MemberItemRepository memberItemRepository;
 
     // local에서 사용할 filePath
     // push 할 때는 이 파일 경로를 주석 처리
@@ -146,13 +142,6 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    // 특정 Snowman의 SnowmanItem 모두 호출
-    @Transactional
-    public List<SnowmanItem> getItemsBySnowman(Snowman snowman) {
-        List<SnowmanItem> snowmanItems = snowmanItemRepository.findBySnowman(snowman);
-        return snowmanItems;
-    }
-
     // Member 에 Item 추가
     @Transactional
     public void addItemIntoMember(Member member, Item item) {
@@ -161,31 +150,6 @@ public class ItemService {
                 .member(member)
                 .build();
         memberItemRepository.save(newMemberItem);
-    }
-
-    // SnowmanItem 에 Item 추가
-    @Transactional
-    public void addItemIntoSnowman(Snowman snowman, SnowmanItemRequest request) {
-        SnowmanItem newSnowManItem = SnowmanItem.builder()
-                .item(itemRepository.getItemById(request.getId()))
-                .build();
-        snowmanItemRepository.save(newSnowManItem);
-    }
-
-    // SnowmanItem 삭제
-    @Transactional
-    public void deleteSnowmanItem(SnowmanItemRequest request) {
-        snowmanItemRepository.deleteSnowmanItemByItem(itemRepository.getItemById(request.getId()));
-    }
-
-    // SnowmanItem 수정
-    @Transactional
-    public SnowmanItem updateSnowmanItem(SnowmanItemRequest request) {
-        SnowmanItem snowmanItem = snowmanItemRepository.findByItem(itemRepository.getItemById(request.getId()))
-                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 아이템이 없습니다."));
-
-        snowmanItemRepository.save(snowmanItem);
-        return snowmanItem;
     }
 
     // mypage에서 본인의 아이템 인벤토리 확인
