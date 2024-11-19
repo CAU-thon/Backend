@@ -14,6 +14,7 @@ import com.nuneddine.server.service.JwtService;
 import com.nuneddine.server.service.MemberService;
 import com.nuneddine.server.service.SnowmanPlacementService;
 import com.nuneddine.server.service.SnowmanService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +23,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1") // URL 주소 매핑
 public class SnowmanController {
-    @Autowired
-    SnowmanService snowmanService;
-    @Autowired
-    JwtService jwtService;
-    @Autowired
-    MemberService memberService;
+
+    private final SnowmanService snowmanService;
+    private final JwtService jwtService;
+    private final MemberService memberService;
+    private final SnowmanPlacementService snowmanPlacementService;
 
     private static final int MAX_SNOWMAN = 3;
-    @Autowired
-    private SnowmanPlacementService snowmanPlacementService;
+
 
     // 맵 눈사람 리스트업
     @GetMapping("/map/{mapNumber}")
@@ -83,18 +83,6 @@ public class SnowmanController {
     public ResponseEntity<SnowmanAllDetailResponseDto> allDailSnowman(@PathVariable(value = "snowmanId") Long snowmanId) {
         SnowmanAllDetailResponseDto responseDto = snowmanService.allDetailSnowman(snowmanId);
         return ResponseEntity.ok(responseDto);
-    }
-
-    // 눈사람 수정하기
-    @PatchMapping("/snowman/detail/{snowmanId}")
-    public ResponseEntity<Long> updateSnowman(@RequestHeader("Authorization") String header, @PathVariable(value = "snowmanId") Long snowmanId, @RequestBody SnowmanUpdateRequestDto requestDto) {
-        // 본인 눈사람만 수정 가능
-        String token = header.substring(7);
-        Long memberId = jwtService.getMemberIdFromToken(token);
-        Member member = memberService.getMemberById(memberId);
-
-        Long Id = snowmanService.updateSnowman(snowmanId, requestDto, member);
-        return new ResponseEntity<>(Id, HttpStatus.CREATED);
     }
 
     // 눈사람 삭제하기

@@ -8,6 +8,7 @@ import com.nuneddine.server.exception.CustomException;
 import com.nuneddine.server.exception.ErrorCode;
 import com.nuneddine.server.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +19,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SnowmanService {
-    @Autowired
-    SnowmanRepository snowmanRepository;
-    @Autowired
-    ItemRepository itemRepository;
-    @Autowired
-    ChoiceRepository choiceRepository;
-    @Autowired
-    MemberSnowmanRepository memberSnowmanRepository;
-    @Autowired
-    SnowmanItemRepository snowmanItemRepository;
-    @Autowired
-    FileUploadService fileUploadService;
+
+    private final SnowmanRepository snowmanRepository;
+    private final ChoiceRepository choiceRepository;
+    private final MemberSnowmanRepository memberSnowmanRepository;
+    private final FileUploadService fileUploadService;
 
     @Transactional
     public List<SnowmanResponseDto> findSnowmansByMap(int mapNumber) {
@@ -122,52 +117,26 @@ public class SnowmanService {
         Snowman snowman = snowmanRepository.findById(snowmanId)
                 .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
         List<Choice> choices = choiceRepository.findBySnowman(snowman);
-        List<SnowmanItemResponseDto> snowmanItems = snowmanItemRepository.findBySnowman(snowman)
-                .stream()
-                .map(item -> new SnowmanItemResponseDto(item.getId()))
-                .collect(Collectors.toList());
         Member member = snowman.getMember();
 
         SnowmanAllDetailResponseDto snowmanAllDetailResponseDto = new SnowmanAllDetailResponseDto(
-                snowmanId, snowman.getName(),
-                snowman.getImage(), snowman.getMapNumber(),
-                snowman.getPosX(), snowman.getPosY(),
+                snowmanId,
+                snowman.getName(),
+                snowman.getImage(),
+                snowman.getMapNumber(),
+                snowman.getPosX(),
+                snowman.getPosY(),
                 member.getId(),
-                snowman.getQuiz(), snowman.getAnswerId(),
-                choices.get(0).getContent(), choices.get(1).getContent(), choices.get(2).getContent(),
-                snowman.getCreatedAt(), snowman.getUpdatedAt()
+                snowman.getQuiz(),
+                snowman.getAnswerId(),
+                choices.get(0).getContent(),
+                choices.get(1).getContent(),
+                choices.get(2).getContent(),
+                snowman.getCreatedAt(),
+                snowman.getUpdatedAt()
         );
 
         return snowmanAllDetailResponseDto;
-    }
-
-    @Transactional
-    public Long updateSnowman(Long snowmanId, SnowmanUpdateRequestDto requestDto, Member member) {
-        Snowman snowman = snowmanRepository.findById(snowmanId)
-                .orElseThrow(() -> new RuntimeException("해당 ID를 가진 눈사람이 없습니다."));
-
-        // 해당 사용자가 만든 눈사람만 수정 가능
-        if (snowman.getMember() != member) {
-            throw new RuntimeException("본인이 만든 눈사람이 아닙니다.");
-        }
-
-        snowman.updateSnowman(requestDto.getName(), requestDto.getColor(), requestDto.getSnowmanShape(), requestDto.getImage());
-
-        // 원래 가지고 있던 아이템들 삭제 후 재생성
-        List<SnowmanItem> beforeItems = snowmanItemRepository.findBySnowman(snowman);
-        for (SnowmanItem item : beforeItems) {
-            snowmanItemRepository.delete(item);
-        }
-
-        List<SnowmanItem> afterItems = requestDto.getSnowmanItemRequests()
-                .stream()
-                .map(item -> new SnowmanItem(snowman, itemRepository.getItemById(item.getId())))
-                .collect(Collectors.toList());
-        for (SnowmanItem snowmanItem : afterItems) {
-            snowmanItemRepository.save(snowmanItem);
-        }
-
-        return snowman.getId();
     }
 
     @Transactional

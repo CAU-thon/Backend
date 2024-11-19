@@ -4,6 +4,7 @@ import com.nuneddine.server.domain.Member;
 import com.nuneddine.server.domain.Snowman;
 import com.nuneddine.server.dto.response.SnowmanResponseDto;
 import com.nuneddine.server.repository.SnowmanRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class SnowmanPlacementService {
 
     private static final double MIN_X = 0;
@@ -20,8 +22,7 @@ public class SnowmanPlacementService {
     private static final double MAX_Y = 100;
     private static final int MAX_USER_SNOWMEN = 3;
 
-    @Autowired
-    private SnowmanRepository snowmanRepository;
+    private final SnowmanRepository snowmanRepository;
 
     // 주어진 맵 번호와 그리드 수, 좌표 범위를 사용하여 각 그리드에서 하나의 눈사람을 선택하는 메소드
     public List<SnowmanResponseDto> selectSnowman(int mapNumber, Member member, int SNOWMAN_MAX_NUM) {

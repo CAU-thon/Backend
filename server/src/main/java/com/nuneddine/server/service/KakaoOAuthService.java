@@ -62,7 +62,7 @@ public class KakaoOAuthService {
                         .username(kakaoUser.getKakaoAccount().getProfile().getNickname())
                         .chance(3)
                         .build(0)
-                        .point(0)
+                        .point(500)
                         .image(kakaoUser.getKakaoAccount().getProfile().getImage())
                         .build());
 

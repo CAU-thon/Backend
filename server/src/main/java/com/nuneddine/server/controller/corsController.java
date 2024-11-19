@@ -10,12 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/cors")
 @Tag(name = "Cors Test Controller", description = "cors 테스트와 jwt 토큰 확인을 위한 API")
 public class corsController {
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     @Operation(summary = "cors GET 테스트", description = "GET method success 라는 메시지를 반환 받은 경우 성공입니다.")
     @GetMapping("")

@@ -10,5 +10,5 @@ public class SnowmanDetailResponseDto {
     private String name;
     private String image;
     private int correctCount; // 맞춘 사람
-    private int incorrentCount; // 틀린 사람
+    private int incorrectCount; // 틀린 사람
 }
