@@ -132,7 +132,7 @@ public class ItemService {
     // 가챠 가능 여부
     @Transactional
     private boolean canGacha(Member member) {
-        if ( member.getPoint() > 300 ) {
+        if ( member.getPoint() >= 300 ) {
             return true;
         } else return false;
     }
