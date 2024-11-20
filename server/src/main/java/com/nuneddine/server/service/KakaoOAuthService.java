@@ -60,7 +60,7 @@ public class KakaoOAuthService {
                 .orElseGet(() -> Member.builder()
                         .kakaoId(kakaoUser.getId())
                         .username(kakaoUser.getKakaoAccount().getProfile().getNickname())
-                        .chance(3)
+                        .chance(10)
                         .build(0)
                         .point(500)
                         .image(kakaoUser.getKakaoAccount().getProfile().getImage())

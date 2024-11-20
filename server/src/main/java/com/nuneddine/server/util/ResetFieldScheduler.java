@@ -16,6 +16,6 @@ public class ResetFieldScheduler {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void resetFields() {
-        memberRepository.resetFieldsToDefault(3);
+        memberRepository.resetFieldsToDefault(10);
     }
 }
